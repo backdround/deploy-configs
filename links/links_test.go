@@ -1,9 +1,9 @@
 package links
 
 import (
-	"testing"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"testing"
 
 	"os"
 	"path"
@@ -30,10 +30,11 @@ func TestSuccessfulMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
+			Name:       "test-link",
 			TargetPath: targetFile,
 			LinkPath:   linkPath,
 		}
-		NewLinkMaker(loggerMock).makeLink("test-link", link)
+		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts the created symlink
 		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath,
@@ -58,11 +59,12 @@ func TestSuccessfulMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
+			Name:       "test-link",
 			TargetPath: targetFile,
 			LinkPath:   linkPath,
 		}
 
-		NewLinkMaker(loggerMock).makeLink("test-link", link)
+		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts the created symlink
 		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath,
@@ -88,10 +90,11 @@ func TestSuccessfulMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
+			Name:       "test-link",
 			TargetPath: targetFile,
 			LinkPath:   linkPath,
 		}
-		NewLinkMaker(loggerMock).makeLink("test-link", link)
+		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts the created symlink
 		require.True(t, fsutility.IsLinkPointsToDestination(linkPath,
@@ -114,10 +117,11 @@ func TestFailedMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
+			Name:       "test-link",
 			TargetPath: targetFile,
 			LinkPath:   linkPath,
 		}
-		NewLinkMaker(loggerMock).makeLink("test-link", link)
+		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts that the file on the link place wasn't deleted
 		linkType := fsutility.GetFileType(link.LinkPath)
@@ -135,7 +139,6 @@ func TestFailedMakeLink(t *testing.T) {
 		assertNoError(os.Mkdir(linkPath, 0755))
 		defer os.Remove(linkPath)
 
-
 		// Sets up the mock
 		loggerMock := new(LoggerMock)
 		defer loggerMock.AssertExpectations(t)
@@ -143,10 +146,11 @@ func TestFailedMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
+			Name:       "test-link",
 			TargetPath: targetFile,
 			LinkPath:   linkPath,
 		}
-		NewLinkMaker(loggerMock).makeLink("test-link", link)
+		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts that the file on the link place wasn't deleted
 		linkType := fsutility.GetFileType(link.LinkPath)
@@ -165,10 +169,11 @@ func TestFailedMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
+			Name:       "test-link",
 			TargetPath: targetFile,
 			LinkPath:   linkPath,
 		}
-		NewLinkMaker(loggerMock).makeLink("test-link", link)
+		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts that files wasn't created
 		linkType := fsutility.GetFileType(linkPath)
@@ -194,10 +199,11 @@ func TestSkippedMakeLink(t *testing.T) {
 
 	// Executes the test
 	link := Link{
+		Name:       "test-link",
 		TargetPath: targetFile,
 		LinkPath:   linkPath,
 	}
-	NewLinkMaker(loggerMock).makeLink("test-link", link)
+	NewLinkMaker(loggerMock).makeLink(link)
 
 	// Asserts that the link exists
 	require.True(t, fsutility.IsLinkPointsToDestination(linkPath, targetFile))
@@ -215,12 +221,12 @@ func TestLinks(t *testing.T) {
 		defer os.Remove(link1Path)
 		defer os.Remove(link2Path)
 
-		links := map[string]Link{
-			"link1": {
+		links := []Link{{
+				Name: "link1",
 				TargetPath: targetFile,
 				LinkPath:   link1Path,
-			},
-			"link2": {
+			},{
+				Name: "link1",
 				TargetPath: targetFile,
 				LinkPath:   link2Path,
 			},
@@ -257,8 +263,8 @@ func TestLinks(t *testing.T) {
 		defer os.RemoveAll(linkPath)
 
 		// Makes data
-		links := map[string]Link{
-			"directory": {
+		links := []Link{{
+				Name: "directory",
 				TargetPath: targetDirectory,
 				LinkPath:   linkPath,
 			},
