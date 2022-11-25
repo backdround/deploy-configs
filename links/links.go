@@ -27,21 +27,21 @@ const (
 
 // linkDecisionMaker chooses what to do with link,
 // based on the filesystem state
-func linkDecisionMaker(targetPath, linkPath string) linkAction {
+func linkDecisionMaker(link Link) linkAction {
 	// Checks target path
-	if fsutility.GetFileType(targetPath) == fsutility.Notexisting {
+	if fsutility.GetFileType(link.TargetPath) == fsutility.Notexisting {
 		return stopTargetDoesntExist
 	}
 
 	// Checks link path
-	linkType := fsutility.GetFileType(linkPath)
+	linkType := fsutility.GetFileType(link.LinkPath)
 	switch linkType {
 	case fsutility.Notexisting:
 		return proceedNew
 	case fsutility.Regular, fsutility.Unknown:
 		return stopLinkFileExists
 	case fsutility.Symlink:
-		if fsutility.IsLinkPointsToDestination(linkPath, targetPath) {
+		if fsutility.IsLinkPointsToDestination(link.LinkPath, link.TargetPath) {
 			return skip
 		} else {
 			return proceedRemove
@@ -102,7 +102,7 @@ func (m linkMaker) makeLink(linkName string, link Link) {
 		}
 	}
 
-	action := linkDecisionMaker(link.TargetPath, link.LinkPath)
+	action := linkDecisionMaker(link)
 
 	switch action {
 	case proceedNew:
