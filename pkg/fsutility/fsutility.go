@@ -12,7 +12,9 @@ func assertNoError(err error) {
 	}
 }
 
-func GetNotExistingPath() string {
+// GetAvailableTempPath returns path to available (nonexistent)
+// temporary file
+func GetAvailableTempPath() string {
 	file, err := os.CreateTemp("", "go_test.*.txt")
 	path := file.Name()
 	assertNoError(err)

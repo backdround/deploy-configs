@@ -9,7 +9,7 @@ import (
 )
 
 func TestNotExistingType(t *testing.T) {
-	notexistingPath := GetNotExistingPath()
+	notexistingPath := GetAvailableTempPath()
 	resultType := GetFileType(notexistingPath)
 	require.Equal(t, Notexisting.String(), resultType.String())
 }
@@ -28,7 +28,7 @@ func TestRegularType(t *testing.T) {
 func TestSymlinkType(t *testing.T) {
 	t.Run("ValidSymlink", func(t *testing.T) {
 		// Creates a valid link
-		linkPath := GetNotExistingPath()
+		linkPath := GetAvailableTempPath()
 		os.Symlink("/dev/null", linkPath)
 		defer os.Remove(linkPath)
 
@@ -39,8 +39,8 @@ func TestSymlinkType(t *testing.T) {
 
 	t.Run("BrokenSymlink", func(t *testing.T) {
 		// Creates a broken link
-		linkPath := GetNotExistingPath()
-		unexistingFilePath := GetNotExistingPath()
+		linkPath := GetAvailableTempPath()
+		unexistingFilePath := GetAvailableTempPath()
 		os.Symlink(unexistingFilePath, linkPath)
 		defer os.Remove(linkPath)
 

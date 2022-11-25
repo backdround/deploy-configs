@@ -48,7 +48,7 @@ func TestSuccessfulMakeLink(t *testing.T) {
 		defer cleanup()
 
 		// Makes a link path inside a notexisting directory
-		linkDirectory := fsutility.GetNotExistingPath()
+		linkDirectory := fsutility.GetAvailableTempPath()
 		linkPath := path.Join(linkDirectory, "link")
 		defer os.RemoveAll(linkDirectory)
 
@@ -135,7 +135,7 @@ func TestFailedMakeLink(t *testing.T) {
 		defer cleanup()
 
 		// Creates directory by link path
-		linkPath := fsutility.GetNotExistingPath()
+		linkPath := fsutility.GetAvailableTempPath()
 		assertNoError(os.Mkdir(linkPath, 0755))
 		defer os.Remove(linkPath)
 
@@ -159,8 +159,8 @@ func TestFailedMakeLink(t *testing.T) {
 
 	t.Run("TargetPathsDontExist", func(t *testing.T) {
 		// Creates test paths
-		targetFile := fsutility.GetNotExistingPath()
-		linkPath := fsutility.GetNotExistingPath()
+		targetFile := fsutility.GetAvailableTempPath()
+		linkPath := fsutility.GetAvailableTempPath()
 
 		// Sets up the mock
 		loggerMock := new(LoggerMock)
@@ -185,7 +185,7 @@ func TestFailedMakeLink(t *testing.T) {
 
 func TestSkippedMakeLink(t *testing.T) {
 	targetFile := "/dev/null"
-	linkPath := fsutility.GetNotExistingPath()
+	linkPath := fsutility.GetAvailableTempPath()
 
 	// Creates link
 	err := os.Symlink(targetFile, linkPath)
@@ -216,8 +216,8 @@ func TestLinks(t *testing.T) {
 	t.Run("SeveralLinks", func(t *testing.T) {
 		// Creates data
 		targetFile := "/dev/null"
-		link1Path := fsutility.GetNotExistingPath()
-		link2Path := fsutility.GetNotExistingPath()
+		link1Path := fsutility.GetAvailableTempPath()
+		link2Path := fsutility.GetAvailableTempPath()
 		defer os.Remove(link1Path)
 		defer os.Remove(link2Path)
 
@@ -259,7 +259,7 @@ func TestLinks(t *testing.T) {
 		defer os.Remove(target2Path)
 
 		// Gets a link path
-		linkPath := fsutility.GetNotExistingPath()
+		linkPath := fsutility.GetAvailableTempPath()
 		defer os.RemoveAll(linkPath)
 
 		// Makes data

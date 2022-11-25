@@ -9,8 +9,8 @@ import (
 	"os"
 )
 
-func TestGetNotExistingPath(t *testing.T) {
-	path := GetNotExistingPath()
+func TestGetAvailableTempPath(t *testing.T) {
+	path := GetAvailableTempPath()
 	_, err := os.Stat(path)
 	require.True(t, os.IsNotExist(err))
 }
@@ -18,7 +18,7 @@ func TestGetNotExistingPath(t *testing.T) {
 func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 	t.Run("CreateNestedDirectory", func(t *testing.T) {
 		// Makes directory path to create
-		rootDirectory := GetNotExistingPath()
+		rootDirectory := GetAvailableTempPath()
 		newDirectory := path.Join(rootDirectory, "level-two")
 		defer os.RemoveAll(rootDirectory)
 
@@ -95,7 +95,7 @@ func TestCreateTemporaryFiles(t *testing.T) {
 func TestIsLinkPointsToDestination(t *testing.T) {
 	t.Run("LinkPointsToDestination", func(t *testing.T) {
 		target := "/dev/null"
-		link := GetNotExistingPath()
+		link := GetAvailableTempPath()
 		err := os.Symlink(target, link)
 		assertNoError(err)
 		defer os.Remove(link)
@@ -105,8 +105,8 @@ func TestIsLinkPointsToDestination(t *testing.T) {
 	})
 
 	t.Run("LinkDoesntPointToDestination", func(t *testing.T) {
-		target := GetNotExistingPath()
-		link := GetNotExistingPath()
+		target := GetAvailableTempPath()
+		link := GetAvailableTempPath()
 		err := os.Symlink("/dev/null", link)
 		assertNoError(err)
 		defer os.Remove(link)
