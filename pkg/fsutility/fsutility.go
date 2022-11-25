@@ -12,17 +12,6 @@ func assertNoError(err error) {
 	}
 }
 
-// GetAvailableTempPath returns path to available (nonexistent)
-// temporary file
-func GetAvailableTempPath() string {
-	file, err := os.CreateTemp("", "go_test.*.txt")
-	path := file.Name()
-	assertNoError(err)
-	assertNoError(os.Remove(path))
-
-	return path
-}
-
 // MakeDirectoryIfDoesntExist creates directory if it doesn't exist.
 // the error is return if unable to create directory.
 func MakeDirectoryIfDoesntExist(directory string) error {

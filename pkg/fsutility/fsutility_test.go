@@ -9,12 +9,6 @@ import (
 	"os"
 )
 
-func TestGetAvailableTempPath(t *testing.T) {
-	path := GetAvailableTempPath()
-	_, err := os.Stat(path)
-	require.True(t, os.IsNotExist(err))
-}
-
 func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 	t.Run("CreateNestedDirectory", func(t *testing.T) {
 		// Makes directory path to create
