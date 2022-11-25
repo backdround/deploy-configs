@@ -21,7 +21,7 @@ func (d *Link) UnmarshalYAML(node *yaml.Node) error {
 	}
 
 	// First element is a target path
-	err := linkNodes[0].Decode(&d.Target)
+	err := linkNodes[0].Decode(&d.TargetPath)
 	if err != nil {
 		return err
 	}

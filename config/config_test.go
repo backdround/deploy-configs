@@ -71,12 +71,12 @@ func TestLinksConfig(t *testing.T) {
 
 	require.Contains(t, config.Links, "link1")
 	link1 := config.Links["link1"]
-	require.Equal(t, "./file1.txt", link1.Target)
+	require.Equal(t, "./file1.txt", link1.TargetPath)
 	require.Equal(t, "./link1", link1.LinkPath)
 
 	require.Contains(t, config.Links, "link2")
 	link2 := config.Links["link2"]
-	require.Equal(t, "./file2.txt", link2.Target)
+	require.Equal(t, "./file2.txt", link2.TargetPath)
 	require.Equal(t, "./link2", link2.LinkPath)
 }
 

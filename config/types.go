@@ -4,8 +4,8 @@ package config
 
 // Link represents symbolic link from user config
 type Link struct {
-	Target   string
-	LinkPath string
+	TargetPath string
+	LinkPath   string
 }
 
 // Command represents command from user config

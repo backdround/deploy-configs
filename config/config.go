@@ -2,8 +2,8 @@
 package config
 
 import (
-	"gopkg.in/yaml.v3"
 	"github.com/backdround/deploy-configs/config/validate"
+	"gopkg.in/yaml.v3"
 
 	"fmt"
 	"reflect"
