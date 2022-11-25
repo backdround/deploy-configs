@@ -1,5 +1,7 @@
-package deploy
+package links
 
+// Link is a stracture that represents symbolic link
+// to create by this package.
 type Link struct {
 	TargetPath string
 	LinkPath   string

@@ -1,4 +1,4 @@
-package deploy
+package links
 
 import (
 	"github.com/stretchr/testify/mock"

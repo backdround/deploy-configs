@@ -1,4 +1,6 @@
-package deploy
+// links describes linkMaker which receives a bunch of links,
+// creates these and logs all outcomes.
+package links
 
 import (
 	"fmt"
@@ -11,6 +13,8 @@ import (
 
 ////////////////////////////////////////////////////////////
 // linkAction
+
+// linkAction describes what to do with a hypothetical link
 type linkAction int
 
 const (
@@ -21,7 +25,8 @@ const (
 	skip
 )
 
-// linkDecisionMaker chooses what to do with with link
+// linkDecisionMaker chooses what to do with link,
+// based on the filesystem state
 func linkDecisionMaker(targetPath, linkPath string) linkAction {
 	// Checks target path
 	if fsutility.GetFileType(targetPath) == fsutility.Notexisting {
@@ -48,6 +53,8 @@ func linkDecisionMaker(targetPath, linkPath string) linkAction {
 
 ////////////////////////////////////////////////////////////
 // linkMaker
+
+// linkMaker makes link and logs all outcomes.
 type linkMaker struct {
 	logger Logger
 }
@@ -116,8 +123,9 @@ func (m linkMaker) makeLink(linkName string, link Link) {
 	}
 }
 
-// Links creates links. If target is a directory it creates
-// appropriate symlinks for all files in that directory
+// Links creates links which are described in links parameter.
+// If target is a directory it creates appropriate symlinks
+// for all files in that directory
 func (m linkMaker) Links(links map[string]Link) {
 	isDirectory := func(path string) bool {
 		stat, err := os.Lstat(path)
