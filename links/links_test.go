@@ -124,6 +124,35 @@ func TestFailedMakeLink(t *testing.T) {
 		require.Equal(t, fsutility.Regular.String(), linkType.String())
 	})
 
+	t.Run("LinkPathIsADirectory", func(t *testing.T) {
+		// Creates target file
+		targetFile := "target.*.txt"
+		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
+		defer cleanup()
+
+		// Creates directory by link path
+		linkPath := fsutility.GetNotExistingPath()
+		assertNoError(os.Mkdir(linkPath, 0755))
+		defer os.Remove(linkPath)
+
+
+		// Sets up the mock
+		loggerMock := new(LoggerMock)
+		defer loggerMock.AssertExpectations(t)
+		loggerMock.On("Fail", containsString("target.")).Once()
+
+		// Executes the test
+		link := Link{
+			TargetPath: targetFile,
+			LinkPath:   linkPath,
+		}
+		NewLinkMaker(loggerMock).makeLink("test-link", link)
+
+		// Asserts that the file on the link place wasn't deleted
+		linkType := fsutility.GetFileType(link.LinkPath)
+		require.Equal(t, fsutility.Directory.String(), linkType.String())
+	})
+
 	t.Run("TargetPathsDontExist", func(t *testing.T) {
 		// Creates test paths
 		targetFile := fsutility.GetNotExistingPath()

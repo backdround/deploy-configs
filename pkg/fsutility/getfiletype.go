@@ -7,6 +7,7 @@ type fileType int
 const (
 	Regular fileType = iota
 	Symlink
+	Directory
 	Notexisting
 	Unknown
 )
@@ -14,13 +15,15 @@ const (
 func (f fileType) String() string {
 	switch f {
 	case Regular:
-		return "reguilar"
+		return "Reguilar"
 	case Symlink:
-		return "symlink"
+		return "Symlink"
+	case Directory:
+		return "Directory"
 	case Notexisting:
-		return "notexisting"
+		return "Notexisting"
 	case Unknown:
-		return "unknown"
+		return "Unknown"
 	}
 
 	panic("unknown fileType")
@@ -39,6 +42,10 @@ func GetFileType(path string) fileType {
 
 	if fileInfo.Mode().IsRegular() {
 		return Regular
+	}
+
+	if fileInfo.IsDir() {
+		return Directory
 	}
 
 	if (fileInfo.Mode() & os.ModeSymlink) == os.ModeSymlink {

@@ -38,7 +38,7 @@ func linkDecisionMaker(link Link) linkAction {
 	switch linkType {
 	case fsutility.Notexisting:
 		return proceedNew
-	case fsutility.Regular, fsutility.Unknown:
+	case fsutility.Regular, fsutility.Directory, fsutility.Unknown:
 		return stopLinkFileExists
 	case fsutility.Symlink:
 		if fsutility.IsLinkPointsToDestination(link.LinkPath, link.TargetPath) {

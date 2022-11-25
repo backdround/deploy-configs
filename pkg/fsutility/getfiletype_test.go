@@ -50,14 +50,12 @@ func TestSymlinkType(t *testing.T) {
 	})
 }
 
-func TestUnknownType (t *testing.T) {
-	t.Run("DirectoryIsUnknownType", func(t *testing.T) {
-		resultType := GetFileType(os.TempDir())
-		require.Equal(t, Unknown.String(), resultType.String())
-	})
+func TestDirectoryType (t *testing.T) {
+	resultType := GetFileType(os.TempDir())
+	require.Equal(t, Directory.String(), resultType.String())
+}
 
-	t.Run("DeviceIsUnknownType", func(t *testing.T) {
-		resultType := GetFileType("/dev/null")
-		require.Equal(t, Unknown.String(), resultType.String())
-	})
+func TestUnknownType (t *testing.T) {
+	resultType := GetFileType("/dev/null")
+	require.Equal(t, Unknown.String(), resultType.String())
 }
