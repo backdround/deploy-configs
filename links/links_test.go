@@ -8,34 +8,9 @@ import (
 
 	"os"
 	"path"
+
+	"github.com/backdround/deploy-configs/pkg/fsutility"
 )
-
-////////////////////////////////////////////////////////////
-// isLinkPointsToDestination
-
-func TestIsLinkPointsToDestination(t *testing.T) {
-	t.Run("LinkPointsToDestination", func(t *testing.T) {
-		target := "/dev/null"
-		link := getNotExistingPath()
-		err := os.Symlink(target, link)
-		assertNoError(err)
-		defer os.Remove(link)
-
-		// Asserts
-		require.True(t, isLinkPointsToDestination(link, target))
-	})
-
-	t.Run("LinkDoesntPointToDestination", func(t *testing.T) {
-		target := getNotExistingPath()
-		link := getNotExistingPath()
-		err := os.Symlink("/dev/null", link)
-		assertNoError(err)
-		defer os.Remove(link)
-
-		// Asserts
-		require.False(t, isLinkPointsToDestination(link, target))
-	})
-}
 
 ////////////////////////////////////////////////////////////
 // makeLink
@@ -45,7 +20,7 @@ func TestSuccessfulMakeLink(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
 		linkPath := targetFile + ".link"
-		cleanup := createTemporaryFiles(&targetFile)
+		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 		defer os.Remove(linkPath)
 
@@ -62,17 +37,17 @@ func TestSuccessfulMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts the created symlink
-		require.True(t, isLinkPointsToDestination(link.LinkPath, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath, targetFile))
 	})
 
 	t.Run("LinkDirectoryDoesntExists", func(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
-		cleanup := createTemporaryFiles(&targetFile)
+		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 
 		// Makes a link path inside a notexisting directory
-		linkDirectory := getNotExistingPath()
+		linkDirectory := fsutility.GetNotExistingPath()
 		linkPath := path.Join(linkDirectory, "link")
 		defer os.RemoveAll(linkDirectory)
 
@@ -90,13 +65,13 @@ func TestSuccessfulMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts the created symlink
-		require.True(t, isLinkPointsToDestination(link.LinkPath, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath, targetFile))
 	})
 
 	t.Run("LinksAreIncorrect", func(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
-		cleanup := createTemporaryFiles(&targetFile)
+		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 
 		// Creates a link file
@@ -118,7 +93,7 @@ func TestSuccessfulMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts the created symlink
-		require.True(t, isLinkPointsToDestination(linkPath, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(linkPath, targetFile))
 	})
 }
 
@@ -127,7 +102,7 @@ func TestFailedMakeLink(t *testing.T) {
 		// Creates test files
 		targetFile := "target.*.txt"
 		linkPath := targetFile + ".link"
-		cleanup := createTemporaryFiles(&targetFile, &linkPath)
+		cleanup := fsutility.CreateTemporaryFiles(&targetFile, &linkPath)
 		defer cleanup()
 
 		// Sets up the mock
@@ -143,14 +118,14 @@ func TestFailedMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts that the file on the link place wasn't deleted
-		linkType := getFileType(link.LinkPath)
-		require.Equal(t, regular.String(), linkType.String())
+		linkType := fsutility.GetFileType(link.LinkPath)
+		require.Equal(t, fsutility.Regular.String(), linkType.String())
 	})
 
 	t.Run("TargetsDontExist", func(t *testing.T) {
 		// Creates test paths
-		targetFile := getNotExistingPath()
-		linkPath := getNotExistingPath()
+		targetFile := fsutility.GetNotExistingPath()
+		linkPath := fsutility.GetNotExistingPath()
 
 		// Sets up the mock
 		loggerMock := new(LoggerMock)
@@ -165,16 +140,16 @@ func TestFailedMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts that files wasn't created
-		linkType := getFileType(linkPath)
-		require.Equal(t, notexisting.String(), linkType.String())
-		targetType := getFileType(targetFile)
-		require.Equal(t, notexisting.String(), targetType.String())
+		linkType := fsutility.GetFileType(linkPath)
+		require.Equal(t, fsutility.Notexisting.String(), linkType.String())
+		targetType := fsutility.GetFileType(targetFile)
+		require.Equal(t, fsutility.Notexisting.String(), targetType.String())
 	})
 }
 
 func TestSkippedMakeLink(t *testing.T) {
 	targetFile := "/dev/null"
-	linkPath := getNotExistingPath()
+	linkPath := fsutility.GetNotExistingPath()
 
 	// Creates link
 	err := os.Symlink(targetFile, linkPath)
@@ -194,7 +169,7 @@ func TestSkippedMakeLink(t *testing.T) {
 	NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 	// Asserts that the link exists
-	require.True(t, isLinkPointsToDestination(linkPath, targetFile))
+	require.True(t, fsutility.IsLinkPointsToDestination(linkPath, targetFile))
 }
 
 //////////////////////////////////////////////////////////
@@ -204,8 +179,8 @@ func TestLinks(t *testing.T) {
 	t.Run("SeveralLinks", func(t *testing.T) {
 		// Creates data
 		targetFile := "/dev/null"
-		link1Path := getNotExistingPath()
-		link2Path := getNotExistingPath()
+		link1Path := fsutility.GetNotExistingPath()
+		link2Path := fsutility.GetNotExistingPath()
 		defer os.Remove(link1Path)
 		defer os.Remove(link2Path)
 
@@ -224,8 +199,8 @@ func TestLinks(t *testing.T) {
 		NewLinkMaker(getLoggerDummy()).Links(links)
 
 		// Asserts that the links are correct
-		require.True(t, isLinkPointsToDestination(link1Path, targetFile))
-		require.True(t, isLinkPointsToDestination(link2Path, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link1Path, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link2Path, targetFile))
 	})
 
 	t.Run("TargetIsADirectory", func(t *testing.T) {
@@ -245,7 +220,7 @@ func TestLinks(t *testing.T) {
 		defer os.Remove(target2Path)
 
 		// Gets a link path
-		linkPath := getNotExistingPath()
+		linkPath := fsutility.GetNotExistingPath()
 		defer os.RemoveAll(linkPath)
 
 		// Makes data
@@ -262,7 +237,7 @@ func TestLinks(t *testing.T) {
 		// Asserts that the links are valid
 		expectedLink1Path := path.Join(linkPath, "target1")
 		expectedLink2Path := path.Join(linkPath, "target2")
-		require.True(t, isLinkPointsToDestination(expectedLink1Path, target1Path))
-		require.True(t, isLinkPointsToDestination(expectedLink2Path, target2Path))
+		require.True(t, fsutility.IsLinkPointsToDestination(expectedLink1Path, target1Path))
+		require.True(t, fsutility.IsLinkPointsToDestination(expectedLink2Path, target2Path))
 	})
 }

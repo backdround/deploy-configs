@@ -5,22 +5,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+
+	"github.com/backdround/deploy-configs/pkg/fsutility"
 )
-
-func isLinkPointsToDestination(linkPath string, destination string) bool {
-	linkDestination, err := os.Readlink(linkPath)
-	if err != nil {
-		return false
-	}
-
-	matched, err := path.Match(linkDestination, destination)
-
-	if err != nil {
-		return false
-	}
-
-	return matched
-}
 
 ////////////////////////////////////////////////////////////
 // linkAction
@@ -37,19 +24,19 @@ const (
 // linkDecisionMaker chooses what to do with with link
 func linkDecisionMaker(targetPath, linkPath string) linkAction {
 	// Checks target path
-	if getFileType(targetPath) == notexisting {
+	if fsutility.GetFileType(targetPath) == fsutility.Notexisting {
 		return stopTargetNotExisting
 	}
 
 	// Checks link path
-	linkType := getFileType(linkPath)
+	linkType := fsutility.GetFileType(linkPath)
 	switch linkType {
-	case notexisting:
+	case fsutility.Notexisting:
 		return proceedNew
-	case regular, unknown:
+	case fsutility.Regular, fsutility.Unknown:
 		return stopLinkFileExist
-	case symlink:
-		if isLinkPointsToDestination(linkPath, targetPath) {
+	case fsutility.Symlink:
+		if fsutility.IsLinkPointsToDestination(linkPath, targetPath) {
 			return skip
 		} else {
 			return proceedRemove
@@ -94,7 +81,7 @@ func (m linkMaker) makeLink(linkName string, link Link) {
 	createLink := func() {
 		// Checks link directory
 		linkDirectory := path.Dir(link.LinkPath)
-		err := makeDirectoryIfDoesntExist(linkDirectory)
+		err := fsutility.MakeDirectoryIfDoesntExist(linkDirectory)
 		if err != nil {
 			m.logFail(linkName, link, err.Error())
 		}
