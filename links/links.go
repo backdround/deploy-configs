@@ -74,13 +74,13 @@ func (m linkMaker) logFail(link Link, reason string) {
 
 func (m linkMaker) logSuccess(link Link) {
 	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
-	message := fmt.Sprintf("Link %q created: %v", link.Name, linkDescription)
+	message := fmt.Sprintf("Link %q created:\n\t%v", link.Name, linkDescription)
 	m.logger.Success(message)
 }
 
 func (m linkMaker) logSkip(link Link) {
 	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
-	message := fmt.Sprintf("Link %q skipped: %v", link.Name, linkDescription)
+	message := fmt.Sprintf("Link %q skipped:\n\t%v", link.Name, linkDescription)
 	m.logger.Log(message)
 }
 
