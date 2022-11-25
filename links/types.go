@@ -1,8 +1,8 @@
 package deploy
 
 type Link struct {
-	Target   string
-	LinkPath string
+	TargetPath string
+	LinkPath   string
 }
 
 type Logger interface {

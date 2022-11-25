@@ -2,7 +2,6 @@ package deploy
 
 import (
 	"testing"
-
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
@@ -16,7 +15,7 @@ import (
 // makeLink
 
 func TestSuccessfulMakeLink(t *testing.T) {
-	t.Run("LinksDoesntExists", func(t *testing.T) {
+	t.Run("LinksDoesntExist", func(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
 		linkPath := targetFile + ".link"
@@ -31,16 +30,17 @@ func TestSuccessfulMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
-			Target:   targetFile,
-			LinkPath: linkPath,
+			TargetPath: targetFile,
+			LinkPath:   linkPath,
 		}
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts the created symlink
-		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath,
+			targetFile))
 	})
 
-	t.Run("LinkDirectoryDoesntExists", func(t *testing.T) {
+	t.Run("LinkDirectoryDoesntExist", func(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
 		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
@@ -58,14 +58,15 @@ func TestSuccessfulMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
-			Target:   targetFile,
-			LinkPath: linkPath,
+			TargetPath: targetFile,
+			LinkPath:   linkPath,
 		}
 
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts the created symlink
-		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link.LinkPath,
+			targetFile))
 	})
 
 	t.Run("LinksAreIncorrect", func(t *testing.T) {
@@ -87,13 +88,14 @@ func TestSuccessfulMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
-			Target:   targetFile,
-			LinkPath: linkPath,
+			TargetPath: targetFile,
+			LinkPath:   linkPath,
 		}
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
 		// Asserts the created symlink
-		require.True(t, fsutility.IsLinkPointsToDestination(linkPath, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(linkPath,
+			targetFile))
 	})
 }
 
@@ -112,8 +114,8 @@ func TestFailedMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
-			Target:   targetFile,
-			LinkPath: linkPath,
+			TargetPath: targetFile,
+			LinkPath:   linkPath,
 		}
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
@@ -122,7 +124,7 @@ func TestFailedMakeLink(t *testing.T) {
 		require.Equal(t, fsutility.Regular.String(), linkType.String())
 	})
 
-	t.Run("TargetsDontExist", func(t *testing.T) {
+	t.Run("TargetPathsDontExist", func(t *testing.T) {
 		// Creates test paths
 		targetFile := fsutility.GetNotExistingPath()
 		linkPath := fsutility.GetNotExistingPath()
@@ -134,8 +136,8 @@ func TestFailedMakeLink(t *testing.T) {
 
 		// Executes the test
 		link := Link{
-			Target:   targetFile,
-			LinkPath: linkPath,
+			TargetPath: targetFile,
+			LinkPath:   linkPath,
 		}
 		NewLinkMaker(loggerMock).makeLink("test-link", link)
 
@@ -163,8 +165,8 @@ func TestSkippedMakeLink(t *testing.T) {
 
 	// Executes the test
 	link := Link{
-		Target:   targetFile,
-		LinkPath: linkPath,
+		TargetPath: targetFile,
+		LinkPath:   linkPath,
 	}
 	NewLinkMaker(loggerMock).makeLink("test-link", link)
 
@@ -186,12 +188,12 @@ func TestLinks(t *testing.T) {
 
 		links := map[string]Link{
 			"link1": {
-				Target:   targetFile,
-				LinkPath: link1Path,
+				TargetPath: targetFile,
+				LinkPath:   link1Path,
 			},
 			"link2": {
-				Target:   targetFile,
-				LinkPath: link2Path,
+				TargetPath: targetFile,
+				LinkPath:   link2Path,
 			},
 		}
 
@@ -199,11 +201,13 @@ func TestLinks(t *testing.T) {
 		NewLinkMaker(getLoggerDummy()).Links(links)
 
 		// Asserts that the links are correct
-		require.True(t, fsutility.IsLinkPointsToDestination(link1Path, targetFile))
-		require.True(t, fsutility.IsLinkPointsToDestination(link2Path, targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link1Path,
+			targetFile))
+		require.True(t, fsutility.IsLinkPointsToDestination(link2Path,
+			targetFile))
 	})
 
-	t.Run("TargetIsADirectory", func(t *testing.T) {
+	t.Run("TargetPathIsADirectory", func(t *testing.T) {
 		// Creates a target directory
 		targetDirectory, err := os.MkdirTemp("", "target.*.d")
 		assertNoError(err)
@@ -226,8 +230,8 @@ func TestLinks(t *testing.T) {
 		// Makes data
 		links := map[string]Link{
 			"directory": {
-				Target:   targetDirectory,
-				LinkPath: linkPath,
+				TargetPath: targetDirectory,
+				LinkPath:   linkPath,
 			},
 		}
 
@@ -237,7 +241,9 @@ func TestLinks(t *testing.T) {
 		// Asserts that the links are valid
 		expectedLink1Path := path.Join(linkPath, "target1")
 		expectedLink2Path := path.Join(linkPath, "target2")
-		require.True(t, fsutility.IsLinkPointsToDestination(expectedLink1Path, target1Path))
-		require.True(t, fsutility.IsLinkPointsToDestination(expectedLink2Path, target2Path))
+		require.True(t,
+			fsutility.IsLinkPointsToDestination(expectedLink1Path, target1Path))
+		require.True(t,
+			fsutility.IsLinkPointsToDestination(expectedLink2Path, target2Path))
 	})
 }

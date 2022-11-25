@@ -16,8 +16,8 @@ type linkAction int
 const (
 	proceedNew linkAction = iota
 	proceedRemove
-	stopTargetNotExisting
-	stopLinkFileExist
+	stopTargetDoesntExist
+	stopLinkFileExists
 	skip
 )
 
@@ -25,7 +25,7 @@ const (
 func linkDecisionMaker(targetPath, linkPath string) linkAction {
 	// Checks target path
 	if fsutility.GetFileType(targetPath) == fsutility.Notexisting {
-		return stopTargetNotExisting
+		return stopTargetDoesntExist
 	}
 
 	// Checks link path
@@ -34,7 +34,7 @@ func linkDecisionMaker(targetPath, linkPath string) linkAction {
 	case fsutility.Notexisting:
 		return proceedNew
 	case fsutility.Regular, fsutility.Unknown:
-		return stopLinkFileExist
+		return stopLinkFileExists
 	case fsutility.Symlink:
 		if fsutility.IsLinkPointsToDestination(linkPath, targetPath) {
 			return skip
@@ -59,20 +59,20 @@ func NewLinkMaker(logger Logger) linkMaker {
 }
 
 func (m linkMaker) logFail(linkName string, link Link, reason string) {
-	linkDescription := fmt.Sprintf("[%q, %q]", link.Target, link.LinkPath)
+	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
 	message := fmt.Sprintf("Unable to create %q link:\n\t%v\n\t\t%v",
 		linkName, linkDescription, reason)
 	m.logger.Fail(message)
 }
 
 func (m linkMaker) logSuccess(linkName string, link Link) {
-	linkDescription := fmt.Sprintf("[%q, %q]", link.Target, link.LinkPath)
+	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
 	message := fmt.Sprintf("Link %q created: %v", linkName, linkDescription)
 	m.logger.Success(message)
 }
 
 func (m linkMaker) logSkip(linkName string, link Link) {
-	linkDescription := fmt.Sprintf("[%q, %q]", link.Target, link.LinkPath)
+	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
 	message := fmt.Sprintf("Link %q skipped: %v", linkName, linkDescription)
 	m.logger.Log(message)
 }
@@ -87,7 +87,7 @@ func (m linkMaker) makeLink(linkName string, link Link) {
 		}
 
 		// Creates link
-		err = os.Symlink(link.Target, link.LinkPath)
+		err = os.Symlink(link.TargetPath, link.LinkPath)
 		if err != nil {
 			m.logFail(linkName, link, err.Error())
 		} else {
@@ -95,7 +95,7 @@ func (m linkMaker) makeLink(linkName string, link Link) {
 		}
 	}
 
-	action := linkDecisionMaker(link.Target, link.LinkPath)
+	action := linkDecisionMaker(link.TargetPath, link.LinkPath)
 
 	switch action {
 	case proceedNew:
@@ -107,9 +107,9 @@ func (m linkMaker) makeLink(linkName string, link Link) {
 			break
 		}
 		createLink()
-	case stopTargetNotExisting:
+	case stopTargetDoesntExist:
 		m.logFail(linkName, link, "Target file isn't exist")
-	case stopLinkFileExist:
+	case stopLinkFileExists:
 		m.logFail(linkName, link, "Link file already exists")
 	case skip:
 		m.logSkip(linkName, link)
@@ -128,13 +128,13 @@ func (m linkMaker) Links(links map[string]Link) {
 	}
 
 	for linkName, link := range links {
-		if !isDirectory(link.Target) {
+		if !isDirectory(link.TargetPath) {
 			m.makeLink(linkName, link)
 			continue
 		}
 
 		// Reads all files in directory
-		fileInfos, err := ioutil.ReadDir(link.Target)
+		fileInfos, err := ioutil.ReadDir(link.TargetPath)
 		if err != nil {
 			m.logFail(linkName, link, err.Error())
 			continue
@@ -145,12 +145,12 @@ func (m linkMaker) Links(links map[string]Link) {
 			targetFileName := path.Base(fileInfo.Name())
 
 			specificName := linkName + "/" + targetFileName
-			specificTargetFile := path.Join(link.Target, targetFileName)
+			specificTargetFile := path.Join(link.TargetPath, targetFileName)
 			specificLinkPath := path.Join(link.LinkPath, targetFileName)
 
 			specificLink := Link{
-				Target:   specificTargetFile,
-				LinkPath: specificLinkPath,
+				TargetPath: specificTargetFile,
+				LinkPath:   specificLinkPath,
 			}
 			m.makeLink(specificName, specificLink)
 		}
