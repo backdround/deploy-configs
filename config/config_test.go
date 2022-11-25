@@ -5,7 +5,23 @@ import (
 
 	"github.com/lithammer/dedent"
 	"github.com/stretchr/testify/require"
+
+	"fmt"
+	"strings"
 )
+
+func assertError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func assertNoTab(data string) {
+	if strings.Contains(data, "\t") {
+		message := fmt.Sprintf("data contains tab: \n%v", data)
+		panic(message)
+	}
+}
 
 func TestNonExistenInstanceConfig(t *testing.T) {
 	data := dedent.Dedent(`

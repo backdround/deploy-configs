@@ -1,4 +1,4 @@
-package config
+package validate
 
 import (
 	"cuelang.org/go/cue/cuecontext"
@@ -9,9 +9,9 @@ import (
 //go:embed config.cue
 var cueSchema []byte
 
-// validate validates dataYaml by cueSchema, returns error if
+// Validate validates dataYaml by cueSchema, returns error if
 // validation is failed
-func cueValidate(dataYaml []byte) error {
+func Validate(dataYaml []byte) error {
 	cueContext := cuecontext.New()
 	cueSchema := cueContext.CompileBytes(cueSchema)
 	err := yaml.Validate(dataYaml, cueSchema)

@@ -1,10 +1,19 @@
-package config
+package validate
 
 import (
 	"testing"
 
+	"fmt"
 	"github.com/lithammer/dedent"
+	"strings"
 )
+
+func assertNoTab(data string) {
+	if strings.Contains(data, "\t") {
+		message := fmt.Sprintf("data contains tab: \n%v", data)
+		panic(message)
+	}
+}
 
 func TestAllowMissingFields(t *testing.T) {
 	data := dedent.Dedent(`
@@ -14,7 +23,7 @@ func TestAllowMissingFields(t *testing.T) {
 	`)
 	assertNoTab(data)
 
-	err := cueValidate([]byte(data))
+	err := Validate([]byte(data))
 
 	if err != nil {
 		t.Errorf("expected no errors:\n%v\ndata:%v\n", err, data)
@@ -31,7 +40,7 @@ func TestAllowEmptyFields(t *testing.T) {
 	`)
 	assertNoTab(data)
 
-	err := cueValidate([]byte(data))
+	err := Validate([]byte(data))
 
 	if err != nil {
 		t.Errorf("expected no errors:\n%v\ndata:%v\n", err, data)
@@ -48,7 +57,7 @@ func TestAllowNotInstancesFields(t *testing.T) {
 	`)
 	assertNoTab(data)
 
-	err := cueValidate([]byte(data))
+	err := Validate([]byte(data))
 
 	if err != nil {
 		t.Errorf("expected no errors:\n%v\ndata:%v\n", err, data)
@@ -65,7 +74,7 @@ func TestInvalidData(t *testing.T) {
 		`)
 		assertNoTab(data)
 
-		err := cueValidate([]byte(data))
+		err := Validate([]byte(data))
 
 		if err == nil {
 			t.Error("expected error on incorrect link data")
@@ -83,7 +92,7 @@ func TestInvalidData(t *testing.T) {
 		`)
 		assertNoTab(data)
 
-		err := cueValidate([]byte(data))
+		err := Validate([]byte(data))
 		if err == nil {
 			t.Error("expected error on incorrect command data")
 		}
@@ -102,7 +111,7 @@ func TestInvalidData(t *testing.T) {
 		`)
 		assertNoTab(data)
 
-		err := cueValidate([]byte(data))
+		err := Validate([]byte(data))
 		if err == nil {
 			t.Error("expected error on incorrect template data")
 		}
@@ -130,7 +139,7 @@ func TestSimpleData(t *testing.T) {
 	`)
 	assertNoTab(data)
 
-	err := cueValidate([]byte(data))
+	err := Validate([]byte(data))
 
 	if err != nil {
 		t.Errorf("expected no errors:\n%v\ndata:%v\n", err, data)

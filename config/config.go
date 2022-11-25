@@ -1,8 +1,10 @@
 package config
 
 import (
-	"fmt"
 	"gopkg.in/yaml.v3"
+	"github.com/backdround/deploy-configs/config/validate"
+
+	"fmt"
 	"reflect"
 )
 
@@ -14,7 +16,7 @@ type fullConfigData struct {
 // Get validates, parses user yaml data and returns config for given instance.
 func Get(dataYaml []byte, instance string) (*Config, error) {
 	// Validates yaml config
-	err := cueValidate(dataYaml)
+	err := validate.Validate(dataYaml)
 	if err != nil {
 		return nil, err
 	}
