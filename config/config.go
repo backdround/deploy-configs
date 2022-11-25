@@ -1,3 +1,4 @@
+// config Validates and parses user yaml config to Config structure.
 package config
 
 import (
@@ -8,7 +9,7 @@ import (
 	"reflect"
 )
 
-// fullConfigData used for parse given instances by user yaml
+// fullConfigData represents all user instances parsed from user yaml
 type fullConfigData struct {
 	Instances map[string]Config `yaml:"instances"`
 }

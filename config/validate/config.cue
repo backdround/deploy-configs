@@ -30,4 +30,5 @@
 	templates?: #Templates | null
 }
 
+// Top level dictionary of instances
 instances: #Instances
