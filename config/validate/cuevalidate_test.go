@@ -134,8 +134,11 @@ func TestSimpleData(t *testing.T) {
 	          input: "./file.txt"
 	          output: "~/file.txt"
 	          data:
-	            variable1: "value1"
-	            variable2: "value2"
+	            simple-variable: "value"
+	            nested-variable:
+	              nested1: "value"
+	              nested2: "value"
+
 	`)
 	assertNoTab(data)
 

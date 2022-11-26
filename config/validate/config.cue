@@ -17,9 +17,7 @@
 	[string]: {
 		input:  string
 		output: string
-		data: {
-			[string]: string
-		}
+		data:   _
 	}
 }
 

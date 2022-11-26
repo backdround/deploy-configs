@@ -132,6 +132,7 @@ func TestTemplatesConfig(t *testing.T) {
 
 	require.Contains(t, template.Data, "variable1")
 	require.Contains(t, template.Data, "variable2")
-	require.Equal(t, "value1", template.Data["variable1"])
-	require.Equal(t, "value2", template.Data["variable2"])
+	templateData := template.Data.(map[string]interface{})
+	require.Equal(t, "value1", templateData["variable1"].(string))
+	require.Equal(t, "value2", templateData["variable2"].(string))
 }

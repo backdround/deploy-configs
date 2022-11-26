@@ -17,9 +17,9 @@ type Command struct {
 
 // Command represents template from user config
 type Template struct {
-	InputPath  string            `yaml:"input"`
-	OutputPath string            `yaml:"output"`
-	Data       map[string]string `yaml:"data"`
+	InputPath  string      `yaml:"input"`
+	OutputPath string      `yaml:"output"`
+	Data       interface{} `yaml:"data"`
 }
 
 // Config represents parsed user config
