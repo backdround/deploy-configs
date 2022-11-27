@@ -1,6 +1,6 @@
 package templates
 
-// Template represents template to expand
+// Template represents template to expand by this package
 type Template struct {
 	Name       string
 	InputPath  string

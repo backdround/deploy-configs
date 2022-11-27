@@ -29,6 +29,8 @@ func (f fileType) String() string {
 	panic("unknown fileType")
 }
 
+// GetFileType returns fileType. If permission denied occur then
+// returns unknown.
 func GetFileType(path string) fileType {
 	fileInfo, err := os.Lstat(path)
 

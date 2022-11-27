@@ -1,3 +1,4 @@
+// fstestutility describes functions that are useful for tests
 package fstestutility
 
 import (

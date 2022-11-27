@@ -70,4 +70,3 @@ func IsLinkPointsToDestination(linkPath string, destination string) bool {
 
 	return matched
 }
-

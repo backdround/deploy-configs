@@ -86,6 +86,7 @@ func (m templateMaker) makeTemplate(t Template) {
 	m.logSuccess(t)
 }
 
+// MakeTemplates expands the given templates.
 func (m templateMaker) MakeTemplates(templates []Template) {
 	for _, template := range templates {
 		m.makeTemplate(template)
