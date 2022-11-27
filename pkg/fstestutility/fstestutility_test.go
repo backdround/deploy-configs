@@ -1,11 +1,10 @@
 package fstestutility_test
 
 import (
-	"testing"
-
-	"github.com/stretchr/testify/require"
-
 	"os"
+
+	"testing"
+	"github.com/stretchr/testify/require"
 
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
@@ -39,4 +38,19 @@ func TestCreateTemporaryFiles(t *testing.T) {
 		_, err := os.Stat(file)
 		require.True(t, os.IsNotExist(err))
 	})
+}
+
+func TestCreateTemporaryFileWithData(t *testing.T) {
+	data := "some data"
+	path, cleanup := fstestutility.CreateTemporaryFileWithData(data)
+
+	// Asserts that the file is created
+	file, err := os.Stat(path)
+	require.NoError(t, err)
+	require.True(t, file.Mode().IsRegular())
+
+	// Asserts that the cleanup removes file
+	cleanup()
+	_, err = os.Stat(path)
+	require.ErrorIs(t, err, os.ErrNotExist)
 }

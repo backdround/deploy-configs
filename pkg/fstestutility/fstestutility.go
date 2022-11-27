@@ -32,3 +32,15 @@ func CreateTemporaryFiles(patterns ...*string) (cleanup func()) {
 
 	return removeAllFiles
 }
+
+// CreateTemporaryFileWithData Creates a file with given data.
+// It returns path to file and a cleanup function.
+func CreateTemporaryFileWithData(data string) (path string, cleanup func()) {
+	path = GetAvailableTempPath()
+	err := os.WriteFile(path, []byte(data), 0644)
+	assertNoError(err)
+
+	return path, func() {
+		os.Remove(path)
+	}
+}

@@ -11,20 +11,11 @@ import (
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
 
-func createTemporaryFile(data string) (path string, cleanup func()) {
-	path = fstestutility.GetAvailableTempPath()
-	err := os.WriteFile(path, []byte(data), 0644)
-	assertNoError(err)
-
-	return path, func() {
-		os.Remove(path)
-	}
-}
-
 func TestSuccessfulMakeTemplate(t *testing.T) {
 	t.Run("OutputFileDoesntExist", func(t *testing.T) {
 		// Creates a template file
-		templateFile, cleanup := createTemporaryFile("{{.var1}} {{.var2}}")
+		templateFile, cleanup :=
+			fstestutility.CreateTemporaryFileWithData("{{.var1}} {{.var2}}")
 		defer cleanup()
 
 		expandData := map[string]string{
@@ -63,7 +54,8 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 	t.Run("OutputFileExists", func(t *testing.T) {
 		// Creates a template file
 		templateData := "{{.var1}} {{.var2}}"
-		templateFile, templateCleanup := createTemporaryFile(templateData)
+		templateFile, templateCleanup :=
+			fstestutility.CreateTemporaryFileWithData(templateData)
 		defer templateCleanup()
 
 		expandData := map[string]string{
@@ -72,7 +64,8 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		}
 
 		// Creates an output file
-		outputPath, outputCleanup := createTemporaryFile("some file data")
+		outputPath, outputCleanup :=
+			fstestutility.CreateTemporaryFileWithData("some file data")
 		defer outputCleanup()
 
 		// Creates test data
@@ -101,7 +94,8 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 
 	t.Run("OutputDirectoryDoesntExist", func(t *testing.T) {
 		// Creates a template file
-		templateFile, cleanup := createTemporaryFile("{{.var1}} {{.var2}}")
+		templateFile, cleanup :=
+			fstestutility.CreateTemporaryFileWithData("{{.var1}} {{.var2}}")
 		defer cleanup()
 
 		expandData := map[string]string{
@@ -167,7 +161,8 @@ func TestFailMakeTemplate(t *testing.T) {
 	t.Run("DataDoesntCorrespond", func(t *testing.T) {
 		// Creates a template file
 		templateData := "{{.var1}} {{.var2}}"
-		templateFile, cleanup := createTemporaryFile(templateData)
+		templateFile, cleanup :=
+			fstestutility.CreateTemporaryFileWithData(templateData)
 		defer cleanup()
 
 		// Creates test data
@@ -193,7 +188,8 @@ func TestFailMakeTemplate(t *testing.T) {
 	t.Run("TemplateInvalid", func(t *testing.T) {
 		// Creates a template file
 		templateData := `{{`
-		templateFile, cleanup := createTemporaryFile(templateData)
+		templateFile, cleanup :=
+			fstestutility.CreateTemporaryFileWithData(templateData)
 		defer cleanup()
 
 		// Creates test data
@@ -219,7 +215,8 @@ func TestFailMakeTemplate(t *testing.T) {
 
 func TestSkipMakeTemplate(t *testing.T) {
 	// Creates the template file
-	templateFile, templateCleanup := createTemporaryFile("{{.var1}} {{.var2}}")
+	templateFile, templateCleanup :=
+		fstestutility.CreateTemporaryFileWithData("{{.var1}} {{.var2}}")
 	defer templateCleanup()
 
 	expandData := map[string]string{
@@ -228,7 +225,8 @@ func TestSkipMakeTemplate(t *testing.T) {
 	}
 
 	// Creates an output file
-	outputFile, outputCleanup := createTemporaryFile("value1 value2")
+	outputFile, outputCleanup :=
+		fstestutility.CreateTemporaryFileWithData("value1 value2")
 	defer outputCleanup()
 
 	// Creates test data
