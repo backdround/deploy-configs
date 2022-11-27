@@ -9,6 +9,7 @@ import (
 	"path"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
+	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
 
 ////////////////////////////////////////////////////////////
@@ -19,7 +20,7 @@ func TestSuccessfulMakeLink(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
 		linkPath := targetFile + ".link"
-		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
+		cleanup := fstestutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 		defer os.Remove(linkPath)
 
@@ -44,7 +45,7 @@ func TestSuccessfulMakeLink(t *testing.T) {
 	t.Run("LinkDirectoryDoesntExist", func(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
-		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
+		cleanup := fstestutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 
 		// Makes a link path inside a notexisting directory
@@ -74,7 +75,7 @@ func TestSuccessfulMakeLink(t *testing.T) {
 	t.Run("LinksAreIncorrect", func(t *testing.T) {
 		// Creates a target file
 		targetFile := "target.*.txt"
-		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
+		cleanup := fstestutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 
 		// Creates a link file
@@ -107,7 +108,7 @@ func TestFailedMakeLink(t *testing.T) {
 		// Creates test files
 		targetFile := "target.*.txt"
 		linkPath := targetFile + ".link"
-		cleanup := fsutility.CreateTemporaryFiles(&targetFile, &linkPath)
+		cleanup := fstestutility.CreateTemporaryFiles(&targetFile, &linkPath)
 		defer cleanup()
 
 		// Sets up the mock
@@ -131,7 +132,7 @@ func TestFailedMakeLink(t *testing.T) {
 	t.Run("LinkPathIsADirectory", func(t *testing.T) {
 		// Creates target file
 		targetFile := "target.*.txt"
-		cleanup := fsutility.CreateTemporaryFiles(&targetFile)
+		cleanup := fstestutility.CreateTemporaryFiles(&targetFile)
 		defer cleanup()
 
 		// Creates directory by link path

@@ -27,29 +27,6 @@ func MakeDirectoryIfDoesntExist(directory string) error {
 	return os.MkdirAll(directory, 0755)
 }
 
-// CreateTemporaryFiles creates files by the patterns (* for random substitution).
-// It changes the patterns parameters to the paths. It returns a cleanup function.
-func CreateTemporaryFiles(patterns ...*string) (cleanup func()) {
-	filesToRemove := []string{}
-
-	for _, pattern := range patterns {
-		file, err := os.CreateTemp("", *pattern)
-		assertNoError(err)
-		file.Close()
-		filesToRemove = append(filesToRemove, file.Name())
-		*pattern = file.Name()
-	}
-
-	removeAllFiles := func() {
-		for _, path := range filesToRemove {
-			err := os.Remove(path)
-			assertNoError(err)
-		}
-	}
-
-	return removeAllFiles
-}
-
 func IsLinkPointsToDestination(linkPath string, destination string) bool {
 	linkDestination, err := os.Readlink(linkPath)
 	if err != nil {
