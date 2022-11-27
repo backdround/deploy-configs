@@ -1,11 +1,12 @@
 package fsutility
 
 import (
-	"fmt"
-	"os"
-	"io"
-	"path"
 	"crypto/sha512"
+	"fmt"
+	"io"
+	"os"
+	"path"
+	"bytes"
 )
 
 func assertNoError(err error) {
@@ -27,6 +28,19 @@ func GetFileHash (path string) []byte {
 	// Calculates hash
 	hash := sha512.New()
 	if _, err := io.Copy(hash, file); err != nil {
+		return []byte{}
+	}
+
+	return hash.Sum(nil)
+}
+
+// GetHash calculates sha512 from given data
+func GetHash(data []byte) []byte {
+	dataReader := bytes.NewReader(data)
+
+	// Calculates hash
+	hash := sha512.New()
+	if _, err := io.Copy(hash, dataReader); err != nil {
 		return []byte{}
 	}
 

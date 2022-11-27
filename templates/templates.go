@@ -62,15 +62,11 @@ func (m templateMaker) makeTemplate(t Template) {
 	}
 
 	// Checks if the output file is already expanded
-	outputType := fsutility.GetFileType(t.OutputPath)
-	if outputType == fsutility.Regular {
-		outputData, err := os.ReadFile(t.OutputPath)
-		if err == nil {
-			if bytes.Equal(outputBuffer.Bytes(), outputData) {
-				m.logSkip(t)
-				return
-			}
-		}
+	oldOutputFileHash := fsutility.GetFileHash(t.OutputPath)
+	newOutputFileHash := fsutility.GetHash(outputBuffer.Bytes())
+	if bytes.Equal(oldOutputFileHash, newOutputFileHash) {
+		m.logSkip(t)
+		return
 	}
 
 	// Creates tha output file directory
