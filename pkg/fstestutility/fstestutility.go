@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-func assertNoError(err error) {
+func AssertNoError(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -17,7 +17,7 @@ func CreateTemporaryFiles(patterns ...*string) (cleanup func()) {
 
 	for _, pattern := range patterns {
 		file, err := os.CreateTemp("", *pattern)
-		assertNoError(err)
+		AssertNoError(err)
 		file.Close()
 		filesToRemove = append(filesToRemove, file.Name())
 		*pattern = file.Name()
@@ -26,7 +26,7 @@ func CreateTemporaryFiles(patterns ...*string) (cleanup func()) {
 	removeAllFiles := func() {
 		for _, path := range filesToRemove {
 			err := os.Remove(path)
-			assertNoError(err)
+			AssertNoError(err)
 		}
 	}
 
@@ -38,7 +38,7 @@ func CreateTemporaryFiles(patterns ...*string) (cleanup func()) {
 func CreateTemporaryFileWithData(data string) (path string, cleanup func()) {
 	path = GetAvailableTempPath()
 	err := os.WriteFile(path, []byte(data), 0644)
-	assertNoError(err)
+	AssertNoError(err)
 
 	return path, func() {
 		os.Remove(path)

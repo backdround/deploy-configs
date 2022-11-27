@@ -35,12 +35,6 @@ func getLoggerDummy() Logger {
 ////////////////////////////////////////////////////////////
 // Utility functions
 
-func assertNoError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 // containsString returns a mock.matcher that match if argument contains
 // a given string for mock.Mock.on function.
 func containsString(str string) interface{} {

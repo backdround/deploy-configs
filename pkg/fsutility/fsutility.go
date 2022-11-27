@@ -9,12 +9,6 @@ import (
 	"bytes"
 )
 
-func assertNoError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 // GetFileHash calculates sha512 with file data.
 // If file doesn't exist then it returns empty slice.
 func GetFileHash (path string) []byte {

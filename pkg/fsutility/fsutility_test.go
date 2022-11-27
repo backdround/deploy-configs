@@ -44,7 +44,7 @@ func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 	t.Run("FailOnExistingFile", func(t *testing.T) {
 		// Makes directory path to create
 		file, err := os.CreateTemp("", "go_test.*.txt")
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(file.Name())
 
 		dirictoryToCreate := file.Name()
@@ -59,7 +59,7 @@ func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 	t.Run("NoErrorOnExistingDirectory", func(t *testing.T) {
 		// Makes directory path to create
 		directory, err := os.MkdirTemp("", "go_test.*.d")
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(directory)
 
 		// Executes the test
@@ -75,7 +75,7 @@ func TestIsLinkPointsToDestination(t *testing.T) {
 		target := "/dev/null"
 		link := fstestutility.GetAvailableTempPath()
 		err := os.Symlink(target, link)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(link)
 
 		// Asserts
@@ -86,7 +86,7 @@ func TestIsLinkPointsToDestination(t *testing.T) {
 		target := fstestutility.GetAvailableTempPath()
 		link := fstestutility.GetAvailableTempPath()
 		err := os.Symlink("/dev/null", link)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(link)
 
 		// Asserts

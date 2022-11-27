@@ -137,7 +137,7 @@ func TestFailedMakeLink(t *testing.T) {
 
 		// Creates directory by link path
 		linkPath := fstestutility.GetAvailableTempPath()
-		assertNoError(os.Mkdir(linkPath, 0755))
+		fstestutility.AssertNoError(os.Mkdir(linkPath, 0755))
 		defer os.Remove(linkPath)
 
 		// Sets up the mock
@@ -190,7 +190,7 @@ func TestSkippedMakeLink(t *testing.T) {
 
 	// Creates link
 	err := os.Symlink(targetFile, linkPath)
-	assertNoError(err)
+	fstestutility.AssertNoError(err)
 	defer os.Remove(linkPath)
 
 	// Sets up the mock
@@ -246,17 +246,17 @@ func TestLinks(t *testing.T) {
 	t.Run("TargetPathIsADirectory", func(t *testing.T) {
 		// Creates a target directory
 		targetDirectory, err := os.MkdirTemp("", "target.*.d")
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(targetDirectory)
 
 		target1Path := path.Join(targetDirectory, "target1")
 		_, err = os.Create(target1Path)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(target1Path)
 
 		target2Path := path.Join(targetDirectory, "target2")
 		_, err = os.Create(target2Path)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		defer os.Remove(target2Path)
 
 		// Gets a link path

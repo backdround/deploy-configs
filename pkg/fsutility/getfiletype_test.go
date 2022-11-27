@@ -17,7 +17,7 @@ func TestNotExistingType(t *testing.T) {
 func TestRegularType(t *testing.T) {
 	// Gets an unexisting filename
 	file, err := os.CreateTemp("", "go_test.*.txt")
-	assertNoError(err)
+	fstestutility.AssertNoError(err)
 	defer os.Remove(file.Name())
 
 	// Checks that file is not existing

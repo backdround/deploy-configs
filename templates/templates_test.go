@@ -47,7 +47,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		resultData, err := os.ReadFile(outputPath)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		require.Equal(t, "value1 value2", string(resultData))
 	})
 
@@ -88,7 +88,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		resultData, err := os.ReadFile(outputPath)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		require.Equal(t, "value1 value2", string(resultData))
 	})
 
@@ -128,7 +128,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		resultData, err := os.ReadFile(outputPath)
-		assertNoError(err)
+		fstestutility.AssertNoError(err)
 		require.Equal(t, "value1 value2", string(resultData))
 	})
 }
@@ -250,6 +250,6 @@ func TestSkipMakeTemplate(t *testing.T) {
 
 	// Asserts that the file hasn't been changed
 	resultData, err := os.ReadFile(outputFile)
-	assertNoError(err)
+	fstestutility.AssertNoError(err)
 	require.Equal(t, "value1 value2", string(resultData))
 }

@@ -20,8 +20,8 @@ func (searcher *tempPathSearcher) getUnoccupiedPath() string {
 
 	for true {
 		file, err := os.CreateTemp("", "go_test.*.txt")
-		assertNoError(err)
-		assertNoError(os.Remove(file.Name()))
+		AssertNoError(err)
+		AssertNoError(os.Remove(file.Name()))
 
 		path = file.Name()
 		if searcher.issuedPaths[path] {
