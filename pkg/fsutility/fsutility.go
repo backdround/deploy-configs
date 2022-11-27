@@ -3,13 +3,34 @@ package fsutility
 import (
 	"fmt"
 	"os"
+	"io"
 	"path"
+	"crypto/sha512"
 )
 
 func assertNoError(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// GetFileHash calculates sha512 with file data.
+// If file doesn't exist then it returns empty slice.
+func GetFileHash (path string) []byte {
+	// Opens file
+	file, err := os.Open(path)
+	if err != nil {
+		return []byte{}
+	}
+	defer file.Close()
+
+	// Calculates hash
+	hash := sha512.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		return []byte{}
+	}
+
+	return hash.Sum(nil)
 }
 
 // MakeDirectoryIfDoesntExist creates directory if it doesn't exist.

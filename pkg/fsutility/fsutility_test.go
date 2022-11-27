@@ -1,13 +1,28 @@
 package fsutility
 
 import (
+	"bytes"
+	"os"
 	"path"
 	"testing"
-	"os"
 
-	"github.com/stretchr/testify/require"
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
+	"github.com/stretchr/testify/require"
 )
+
+func TestGetFileHash(t *testing.T) {
+	data := "some data"
+	path1, cleanup := fstestutility.CreateTemporaryFileWithData(data)
+	defer cleanup()
+
+	path2, cleanup := fstestutility.CreateTemporaryFileWithData(data)
+	defer cleanup()
+
+	hash1 := GetFileHash(path1)
+	hash2 := GetFileHash(path2)
+
+	require.True(t, bytes.Equal(hash1, hash2))
+}
 
 func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 	t.Run("CreateNestedDirectory", func(t *testing.T) {
