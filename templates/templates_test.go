@@ -8,10 +8,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
+	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
 
 func createTemporaryFile(data string) (path string, cleanup func()) {
-	path = fsutility.GetAvailableTempPath()
+	path = fstestutility.GetAvailableTempPath()
 	err := os.WriteFile(path, []byte(data), 0644)
 	assertNoError(err)
 
@@ -32,7 +33,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		}
 
 		// Creates an output path
-		outputPath := fsutility.GetAvailableTempPath()
+		outputPath := fstestutility.GetAvailableTempPath()
 		defer os.Remove(outputPath)
 
 		// Creates test data
@@ -109,7 +110,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		}
 
 		// Creates an output file
-		outputDirectory := fsutility.GetAvailableTempPath()
+		outputDirectory := fstestutility.GetAvailableTempPath()
 		outputPath := path.Join(outputDirectory, "file")
 		defer os.RemoveAll(outputDirectory)
 
@@ -140,8 +141,8 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 
 func TestFailMakeTemplate(t *testing.T) {
 	t.Run("TemplateFileDoesntExist", func(t *testing.T) {
-		templatePath := fsutility.GetAvailableTempPath()
-		outputPath := fsutility.GetAvailableTempPath()
+		templatePath := fstestutility.GetAvailableTempPath()
+		outputPath := fstestutility.GetAvailableTempPath()
 
 		// Creates test data
 		template := Template{
@@ -173,7 +174,7 @@ func TestFailMakeTemplate(t *testing.T) {
 		template := Template{
 			Name:       "test-template",
 			InputPath:  templateFile,
-			OutputPath: fsutility.GetAvailableTempPath(),
+			OutputPath: fstestutility.GetAvailableTempPath(),
 			Data:       "it doesn't have required fields",
 		}
 
@@ -199,7 +200,7 @@ func TestFailMakeTemplate(t *testing.T) {
 		template := Template{
 			Name:       "test-template",
 			InputPath:  templateFile,
-			OutputPath: fsutility.GetAvailableTempPath(),
+			OutputPath: fstestutility.GetAvailableTempPath(),
 			Data:       "it is't required",
 		}
 

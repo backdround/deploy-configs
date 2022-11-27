@@ -1,4 +1,4 @@
-package fsutility
+package fstestutility
 
 import (
 	"os"

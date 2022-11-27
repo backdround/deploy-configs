@@ -2,14 +2,14 @@ package fsutility
 
 import (
 	"testing"
+	"os"
 
 	"github.com/stretchr/testify/require"
-
-	"os"
+	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
 
 func TestNotExistingType(t *testing.T) {
-	notexistingPath := GetAvailableTempPath()
+	notexistingPath := fstestutility.GetAvailableTempPath()
 	resultType := GetFileType(notexistingPath)
 	require.Equal(t, Notexisting.String(), resultType.String())
 }
@@ -28,7 +28,7 @@ func TestRegularType(t *testing.T) {
 func TestSymlinkType(t *testing.T) {
 	t.Run("ValidSymlink", func(t *testing.T) {
 		// Creates a valid link
-		linkPath := GetAvailableTempPath()
+		linkPath := fstestutility.GetAvailableTempPath()
 		os.Symlink("/dev/null", linkPath)
 		defer os.Remove(linkPath)
 
@@ -39,8 +39,8 @@ func TestSymlinkType(t *testing.T) {
 
 	t.Run("BrokenSymlink", func(t *testing.T) {
 		// Creates a broken link
-		linkPath := GetAvailableTempPath()
-		unexistingFilePath := GetAvailableTempPath()
+		linkPath := fstestutility.GetAvailableTempPath()
+		unexistingFilePath := fstestutility.GetAvailableTempPath()
 		os.Symlink(unexistingFilePath, linkPath)
 		defer os.Remove(linkPath)
 

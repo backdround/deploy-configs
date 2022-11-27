@@ -3,16 +3,16 @@ package fsutility
 import (
 	"path"
 	"testing"
+	"os"
 
 	"github.com/stretchr/testify/require"
-
-	"os"
+	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
 
 func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 	t.Run("CreateNestedDirectory", func(t *testing.T) {
 		// Makes directory path to create
-		rootDirectory := GetAvailableTempPath()
+		rootDirectory := fstestutility.GetAvailableTempPath()
 		newDirectory := path.Join(rootDirectory, "level-two")
 		defer os.RemoveAll(rootDirectory)
 
@@ -58,7 +58,7 @@ func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 func TestIsLinkPointsToDestination(t *testing.T) {
 	t.Run("LinkPointsToDestination", func(t *testing.T) {
 		target := "/dev/null"
-		link := GetAvailableTempPath()
+		link := fstestutility.GetAvailableTempPath()
 		err := os.Symlink(target, link)
 		assertNoError(err)
 		defer os.Remove(link)
@@ -68,8 +68,8 @@ func TestIsLinkPointsToDestination(t *testing.T) {
 	})
 
 	t.Run("LinkDoesntPointToDestination", func(t *testing.T) {
-		target := GetAvailableTempPath()
-		link := GetAvailableTempPath()
+		target := fstestutility.GetAvailableTempPath()
+		link := fstestutility.GetAvailableTempPath()
 		err := os.Symlink("/dev/null", link)
 		assertNoError(err)
 		defer os.Remove(link)
