@@ -24,10 +24,10 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: inputFile,
-			OutputPath: outputPath,
-			Command: "cat {{.input}} > {{.output}}",
+			Name:            "test-command",
+			InputPath:       inputFile,
+			OutputPath:      outputPath,
+			CommandTemplate: "cat {{.input}} > {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -36,7 +36,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		logger.On("Success", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 
 		// Asserts output file
 		outputFileType := fsutility.GetFileType(outputPath)
@@ -60,10 +60,10 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: inputFile,
-			OutputPath: outputPath,
-			Command: "cat {{.input}} > {{.output}}",
+			Name:            "test-command",
+			InputPath:       inputFile,
+			OutputPath:      outputPath,
+			CommandTemplate: "cat {{.input}} > {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -72,7 +72,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		logger.On("Success", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 
 		// Asserts output file
 		outputFileType := fsutility.GetFileType(outputPath)
@@ -97,10 +97,10 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: inputFile,
-			OutputPath: outputFile,
-			Command: "cat {{.input}} > {{.output}}",
+			Name:            "test-command",
+			InputPath:       inputFile,
+			OutputPath:      outputFile,
+			CommandTemplate: "cat {{.input}} > {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -109,7 +109,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		logger.On("Success", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 
 		// Asserts output file
 		outputFileType := fsutility.GetFileType(outputFile)
@@ -125,10 +125,10 @@ func TestFailedExecuteCommand(t *testing.T) {
 	t.Run("InputFileDoenstExist", func(t *testing.T) {
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: fstestutility.GetAvailableTempPath(),
-			OutputPath: fstestutility.GetAvailableTempPath(),
-			Command: "cat {{.input}} > {{.output}}",
+			Name:            "test-command",
+			InputPath:       fstestutility.GetAvailableTempPath(),
+			OutputPath:      fstestutility.GetAvailableTempPath(),
+			CommandTemplate: "cat {{.input}} > {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -137,7 +137,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 
 		// Asserts output file
 		outputFileType := fsutility.GetFileType(command.OutputPath)
@@ -152,10 +152,10 @@ func TestFailedExecuteCommand(t *testing.T) {
 
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: inputFile,
-			OutputPath: fstestutility.GetAvailableTempPath(),
-			Command: "cattt {{.input}} > {{.output}}",
+			Name:            "test-command",
+			InputPath:       inputFile,
+			OutputPath:      fstestutility.GetAvailableTempPath(),
+			CommandTemplate: "cattt {{.input}} > {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -164,7 +164,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 
 		// Asserts output file
 		outputFileType := fsutility.GetFileType(command.OutputPath)
@@ -180,10 +180,10 @@ func TestFailedExecuteCommand(t *testing.T) {
 
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: inputFile,
-			OutputPath: fstestutility.GetAvailableTempPath(),
-			Command: "cat {{.input}} {{.output}}",
+			Name:            "test-command",
+			InputPath:       inputFile,
+			OutputPath:      fstestutility.GetAvailableTempPath(),
+			CommandTemplate: "cat {{.input}} {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -192,7 +192,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 	})
 
 	t.Run("UnableToCreateOutputDirectoryDueToFileInPath", func(t *testing.T) {
@@ -205,16 +205,16 @@ func TestFailedExecuteCommand(t *testing.T) {
 		// Creates output path
 		fileInPathData := "data"
 		fileInPath, cleanup := fstestutility.CreateTemporaryFileWithData(
-				fileInPathData)
+			fileInPathData)
 		defer cleanup()
 		outputPath := path.Join(fileInPath, "out.txt")
 
 		// Creates test data
 		command := Command{
-			Name: "test-command",
-			InputPath: inputFile,
-			OutputPath: outputPath,
-			Command: "cat {{.input}} > {{.output}}",
+			Name:            "test-command",
+			InputPath:       inputFile,
+			OutputPath:      outputPath,
+			CommandTemplate: "cat {{.input}} > {{.output}}",
 		}
 
 		// Creates the logger mock
@@ -223,7 +223,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		NewCommandExecuter(logger).executeCommand(command)
+		New(logger).executeCommand(command)
 
 		// Asserts that file in path wasn't changed
 		fileInPathType := fsutility.GetFileType(fileInPath)
@@ -248,10 +248,10 @@ func TestSkippedExecuteCommand(t *testing.T) {
 
 	// Creates test data
 	command := Command{
-		Name: "test-command",
-		InputPath: inputFile,
-		OutputPath: outputFile,
-		Command: "cat {{.input}} > {{.output}}",
+		Name:            "test-command",
+		InputPath:       inputFile,
+		OutputPath:      outputFile,
+		CommandTemplate: "cat {{.input}} > {{.output}}",
 	}
 
 	// Creates the logger mock
@@ -260,7 +260,7 @@ func TestSkippedExecuteCommand(t *testing.T) {
 	logger.On("Log", containsString("test-command")).Once()
 
 	// Executes the test
-	NewCommandExecuter(logger).executeCommand(command)
+	New(logger).executeCommand(command)
 
 	// Asserts output file
 	outputFileType := fsutility.GetFileType(outputFile)

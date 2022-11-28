@@ -3,10 +3,10 @@ package commands
 // Command represents command that creates OutputPath from
 // InputPath by this package
 type Command struct {
-	Name       string
-	InputPath  string
-	OutputPath string
-	Command    string
+	Name            string
+	InputPath       string
+	OutputPath      string
+	CommandTemplate string
 }
 
 type Logger interface {

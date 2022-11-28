@@ -1,5 +1,6 @@
 // commands describes commandExecuter which receives a bunch
-// of commands, executes these and logs all outcomes.
+// of commands, that create files from inputFiles, executes these
+// and logs all outcomes.
 package commands
 
 import (
@@ -17,15 +18,15 @@ type commandExecuter struct {
 	logger Logger
 }
 
-func NewCommandExecuter(logger Logger) commandExecuter {
-	return commandExecuter{
+func New(logger Logger) *commandExecuter {
+	return &commandExecuter{
 		logger: logger,
 	}
 }
 
 func (e commandExecuter) getDescription(command Command) string {
 	return fmt.Sprintf("command %q [%q, %q]",
-		command.Command, command.InputPath, command.OutputPath)
+		command.CommandTemplate, command.InputPath, command.OutputPath)
 }
 
 func (e commandExecuter) logFail(command Command, reason string) {
@@ -46,6 +47,8 @@ func (e commandExecuter) logSkip(command Command) {
 	e.logger.Log(message)
 }
 
+// executeCommand expands command template, executes command,
+// checks that the OutputPath is created and logs all outcomes.
 func (e commandExecuter) executeCommand(c Command) {
 	// Checks that the input file exists
 	inputPathType := fsutility.GetFileType(c.InputPath)
@@ -79,7 +82,7 @@ func (e commandExecuter) executeCommand(c Command) {
 
 	// Gets command template
 	commandTemplate := template.New(c.Name).Option("missingkey=error")
-	commandTemplate, err = commandTemplate.Parse(c.Command)
+	commandTemplate, err = commandTemplate.Parse(c.CommandTemplate)
 	if err != nil {
 		e.logFail(c, err.Error())
 		return
@@ -125,7 +128,8 @@ func (e commandExecuter) executeCommand(c Command) {
 	e.logSuccess(c)
 }
 
-func (e commandExecuter) executeCommands(commands []Command) {
+// ExecuteCommands expands and executes given commands
+func (e commandExecuter) ExecuteCommands(commands []Command) {
 	for _, command := range commands {
 		e.executeCommand(command)
 	}
