@@ -18,7 +18,7 @@ type commandExecuter struct {
 	logger Logger
 }
 
-func New(logger Logger) *commandExecuter {
+func NewCommandExecuter(logger Logger) *commandExecuter {
 	return &commandExecuter{
 		logger: logger,
 	}

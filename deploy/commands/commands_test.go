@@ -36,7 +36,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		logger.On("Success", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 
 		// Asserts output file
 		outputPathType := fsutility.GetPathType(outputPath)
@@ -72,7 +72,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		logger.On("Success", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 
 		// Asserts output file
 		outputPathType := fsutility.GetPathType(outputPath)
@@ -109,7 +109,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		logger.On("Success", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 
 		// Asserts output file
 		outputPathType := fsutility.GetPathType(outputFile)
@@ -137,7 +137,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 
 		// Asserts output file
 		outputPathType := fsutility.GetPathType(command.OutputPath)
@@ -164,7 +164,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 
 		// Asserts output file
 		outputPathType := fsutility.GetPathType(command.OutputPath)
@@ -192,7 +192,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 	})
 
 	t.Run("UnableToCreateOutputDirectoryDueToFileInPath", func(t *testing.T) {
@@ -223,7 +223,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		logger.On("Fail", containsString("test-command")).Once()
 
 		// Executes the test
-		New(logger).executeCommand(command)
+		NewCommandExecuter(logger).executeCommand(command)
 
 		// Asserts that file in path wasn't changed
 		fileInPathType := fsutility.GetPathType(fileInPath)
@@ -260,7 +260,7 @@ func TestSkippedExecuteCommand(t *testing.T) {
 	logger.On("Log", containsString("test-command")).Once()
 
 	// Executes the test
-	New(logger).executeCommand(command)
+	NewCommandExecuter(logger).executeCommand(command)
 
 	// Asserts output file
 	outputPathType := fsutility.GetPathType(outputFile)
