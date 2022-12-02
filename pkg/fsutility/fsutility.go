@@ -1,13 +1,39 @@
 package fsutility
 
 import (
+	"bytes"
 	"crypto/sha512"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path"
-	"bytes"
 )
+
+func FindEntryDescending(topSearchPath string, entryName string, t pathType) (
+	desiredPath string, err error) {
+	getDescendingParentDirectories := func(directory string) []string {
+		parents := []string{directory}
+		nextParent := path.Dir(directory)
+		for directory != nextParent {
+			parents = append(parents, nextParent)
+			directory = nextParent
+			nextParent = path.Dir(directory)
+		}
+		return parents
+	}
+
+	parentDirectories := getDescendingParentDirectories(topSearchPath)
+
+	for _, currentDirectory := range parentDirectories {
+		hypotheticalDesiredPath := path.Join(currentDirectory, entryName)
+		if t == GetPathType(hypotheticalDesiredPath) {
+			return hypotheticalDesiredPath, nil
+		}
+	}
+
+	return "", errors.New("Desired path isn't founded: " + entryName)
+}
 
 // GetFileHash calculates sha512 with file data.
 // If file doesn't exist then it returns empty slice.

@@ -10,6 +10,56 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestFindEntryDescending(t *testing.T) {
+	t.Run("PathOnTop", func(t *testing.T) {
+		// Creates a test directory tree
+		baseDirectory, cleanup := fstestutility.MakeTempDirectory("test_.*.d")
+		defer cleanup()
+		gitPath := fstestutility.MakeDirectory(baseDirectory, ".git")
+
+		// Executes the test
+		resultDesiredDirectory, err := FindEntryDescending(baseDirectory,
+			".git", Directory)
+		require.NoError(t, err)
+
+		// Asserts expectations
+		match, err := path.Match(gitPath, resultDesiredDirectory)
+		require.NoError(t, err)
+		require.True(t, match)
+	})
+
+	t.Run("PathInTheMiddle", func(t *testing.T) {
+		// Creates a test directory tree
+		baseDirectory, cleanup := fstestutility.MakeTempDirectory("test_.*.d")
+		defer cleanup()
+		topLevelPath := path.Join(baseDirectory, "/a/b/c")
+		gitPath := fstestutility.MakeDirectory(baseDirectory, "/a", ".git")
+
+		// Executes the test
+		resultDesiredDirectory, err := FindEntryDescending(topLevelPath,
+			".git", Directory)
+
+		// Asserts expectations
+		require.NoError(t, err)
+		match, err := path.Match(resultDesiredDirectory, gitPath)
+		require.NoError(t, err)
+		require.True(t, match)
+	})
+
+	t.Run("PathDoesntExist", func(t *testing.T) {
+		baseDirectory, cleanup := fstestutility.MakeTempDirectory("test_.*.d")
+		defer cleanup()
+		_, err := FindEntryDescending(baseDirectory, "someEntry", Regular)
+		require.Error(t, err)
+	})
+
+	t.Run("InitialDirectoryDoesntExist", func(t *testing.T) {
+		unexistingPath := fstestutility.GetAvailableTempPath()
+		_, err := FindEntryDescending(unexistingPath, "someEntry", Regular)
+		require.Error(t, err)
+	})
+}
+
 func TestGetFileHash(t *testing.T) {
 	data := "some data"
 	path1, cleanup := fstestutility.CreateTemporaryFileWithData(data)
