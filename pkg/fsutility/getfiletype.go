@@ -2,17 +2,17 @@ package fsutility
 
 import "os"
 
-type fileType int
+type pathType int
 
 const (
-	Regular fileType = iota
+	Regular pathType = iota
 	Symlink
 	Directory
 	Notexisting
 	Unknown
 )
 
-func (f fileType) String() string {
+func (f pathType) String() string {
 	switch f {
 	case Regular:
 		return "Reguilar"
@@ -26,13 +26,13 @@ func (f fileType) String() string {
 		return "Unknown"
 	}
 
-	panic("unknown fileType")
+	panic("unknown pathType")
 }
 
-// GetFileType returns fileType. If permission denied occur then
+// GetPathType returns pathType. If permission denied occur then
 // returns unknown.
-func GetFileType(path string) fileType {
-	fileInfo, err := os.Lstat(path)
+func GetPathType(path string) pathType {
+	pathInfo, err := os.Lstat(path)
 
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -42,15 +42,15 @@ func GetFileType(path string) fileType {
 		}
 	}
 
-	if fileInfo.Mode().IsRegular() {
+	if pathInfo.Mode().IsRegular() {
 		return Regular
 	}
 
-	if fileInfo.IsDir() {
+	if pathInfo.IsDir() {
 		return Directory
 	}
 
-	if (fileInfo.Mode() & os.ModeSymlink) == os.ModeSymlink {
+	if (pathInfo.Mode() & os.ModeSymlink) == os.ModeSymlink {
 		return Symlink
 	}
 

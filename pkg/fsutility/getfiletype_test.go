@@ -10,7 +10,7 @@ import (
 
 func TestNotExistingType(t *testing.T) {
 	notexistingPath := fstestutility.GetAvailableTempPath()
-	resultType := GetFileType(notexistingPath)
+	resultType := GetPathType(notexistingPath)
 	require.Equal(t, Notexisting.String(), resultType.String())
 }
 
@@ -21,7 +21,7 @@ func TestRegularType(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	// Checks that file is not existing
-	resultType := GetFileType(file.Name())
+	resultType := GetPathType(file.Name())
 	require.Equal(t, Regular.String(), resultType.String())
 }
 
@@ -33,7 +33,7 @@ func TestSymlinkType(t *testing.T) {
 		defer os.Remove(linkPath)
 
 		// Checks that it's a link
-		resultType := GetFileType(linkPath)
+		resultType := GetPathType(linkPath)
 		require.Equal(t, Symlink.String(), resultType.String())
 	})
 
@@ -45,17 +45,17 @@ func TestSymlinkType(t *testing.T) {
 		defer os.Remove(linkPath)
 
 		// Checks that it's a link
-		resultType := GetFileType(linkPath)
+		resultType := GetPathType(linkPath)
 		require.Equal(t, Symlink.String(), resultType.String())
 	})
 }
 
 func TestDirectoryType (t *testing.T) {
-	resultType := GetFileType(os.TempDir())
+	resultType := GetPathType(os.TempDir())
 	require.Equal(t, Directory.String(), resultType.String())
 }
 
 func TestUnknownType (t *testing.T) {
-	resultType := GetFileType("/dev/null")
+	resultType := GetPathType("/dev/null")
 	require.Equal(t, Unknown.String(), resultType.String())
 }

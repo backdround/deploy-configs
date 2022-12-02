@@ -43,7 +43,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		NewTemplateMaker(logger).makeTemplate(template)
 
 		// Asserts that the output file exists and expanded
-		outputPathType := fsutility.GetFileType(outputPath)
+		outputPathType := fsutility.GetPathType(outputPath)
 		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		resultData, err := os.ReadFile(outputPath)
@@ -84,7 +84,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		NewTemplateMaker(logger).makeTemplate(template)
 
 		// Asserts that the output file exists and expanded
-		outputPathType := fsutility.GetFileType(outputPath)
+		outputPathType := fsutility.GetPathType(outputPath)
 		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		resultData, err := os.ReadFile(outputPath)
@@ -124,7 +124,7 @@ func TestSuccessfulMakeTemplate(t *testing.T) {
 		NewTemplateMaker(logger).makeTemplate(template)
 
 		// Asserts that the output file exists and expanded
-		outputPathType := fsutility.GetFileType(outputPath)
+		outputPathType := fsutility.GetPathType(outputPath)
 		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		resultData, err := os.ReadFile(outputPath)
@@ -154,7 +154,7 @@ func TestFailMakeTemplate(t *testing.T) {
 		NewTemplateMaker(logger).makeTemplate(template)
 
 		// Asserts that an output file doesn't exist
-		outputPathType := fsutility.GetFileType(outputPath)
+		outputPathType := fsutility.GetPathType(outputPath)
 		require.Equal(t, fsutility.Notexisting.String(), outputPathType.String())
 	})
 
@@ -181,7 +181,7 @@ func TestFailMakeTemplate(t *testing.T) {
 		NewTemplateMaker(logger).makeTemplate(template)
 
 		// Asserts that an output file doesn't exist
-		outputPathType := fsutility.GetFileType(template.OutputPath)
+		outputPathType := fsutility.GetPathType(template.OutputPath)
 		require.Equal(t, fsutility.Notexisting.String(), outputPathType.String())
 	})
 
@@ -208,7 +208,7 @@ func TestFailMakeTemplate(t *testing.T) {
 		NewTemplateMaker(logger).makeTemplate(template)
 
 		// Asserts that a output file doesn't exist
-		outputPathType := fsutility.GetFileType(template.OutputPath)
+		outputPathType := fsutility.GetPathType(template.OutputPath)
 		require.Equal(t, fsutility.Notexisting.String(), outputPathType.String())
 	})
 }
@@ -245,7 +245,7 @@ func TestSkipMakeTemplate(t *testing.T) {
 	NewTemplateMaker(logger).makeTemplate(template)
 
 	// Asserts that the output file exists
-	outputPathType := fsutility.GetFileType(outputFile)
+	outputPathType := fsutility.GetPathType(outputFile)
 	require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 	// Asserts that the file hasn't been changed

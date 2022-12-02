@@ -51,7 +51,7 @@ func (e commandExecuter) logSkip(command Command) {
 // checks that the OutputPath is created and logs all outcomes.
 func (e commandExecuter) executeCommand(c Command) {
 	// Checks that the input file exists
-	inputPathType := fsutility.GetFileType(c.InputPath)
+	inputPathType := fsutility.GetPathType(c.InputPath)
 	if inputPathType == fsutility.Notexisting {
 		e.logFail(c, "input file doesn't exist")
 		return
@@ -61,8 +61,8 @@ func (e commandExecuter) executeCommand(c Command) {
 	oldOutputFileHash := fsutility.GetFileHash(c.OutputPath)
 
 	// Removes the old output file if it exists
-	outputFileType := fsutility.GetFileType(c.OutputPath)
-	if outputFileType == fsutility.Regular {
+	outputPathType := fsutility.GetPathType(c.OutputPath)
+	if outputPathType == fsutility.Regular {
 		err := os.Remove(c.OutputPath)
 		if err != nil {
 			message := fmt.Sprintf("unable to remove output file:\n\t%v",
@@ -110,8 +110,8 @@ func (e commandExecuter) executeCommand(c Command) {
 	}
 
 	// Checks that the command created the output file
-	outputFileType = fsutility.GetFileType(c.OutputPath)
-	if outputFileType != fsutility.Regular {
+	outputPathType = fsutility.GetPathType(c.OutputPath)
+	if outputPathType != fsutility.Regular {
 		message := fmt.Sprintf("command didn't create file. output:\n%v",
 			cmdOutput)
 		e.logFail(c, message)

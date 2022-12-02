@@ -29,12 +29,12 @@ const (
 // based on the filesystem state
 func linkDecisionMaker(link Link) linkAction {
 	// Checks target path
-	if fsutility.GetFileType(link.TargetPath) == fsutility.Notexisting {
+	if fsutility.GetPathType(link.TargetPath) == fsutility.Notexisting {
 		return stopTargetDoesntExist
 	}
 
 	// Checks link path
-	linkType := fsutility.GetFileType(link.LinkPath)
+	linkType := fsutility.GetPathType(link.LinkPath)
 	switch linkType {
 	case fsutility.Notexisting:
 		return proceedNew
@@ -48,7 +48,7 @@ func linkDecisionMaker(link Link) linkAction {
 		}
 	}
 
-	panic("unknown fileType")
+	panic("unknown pathType")
 }
 
 ////////////////////////////////////////////////////////////

@@ -125,7 +125,7 @@ func TestFailedMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts that the file on the link place wasn't deleted
-		linkType := fsutility.GetFileType(link.LinkPath)
+		linkType := fsutility.GetPathType(link.LinkPath)
 		require.Equal(t, fsutility.Regular.String(), linkType.String())
 	})
 
@@ -154,7 +154,7 @@ func TestFailedMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts that the file on the link place wasn't deleted
-		linkType := fsutility.GetFileType(link.LinkPath)
+		linkType := fsutility.GetPathType(link.LinkPath)
 		require.Equal(t, fsutility.Directory.String(), linkType.String())
 	})
 
@@ -177,9 +177,9 @@ func TestFailedMakeLink(t *testing.T) {
 		NewLinkMaker(loggerMock).makeLink(link)
 
 		// Asserts that files wasn't created
-		linkType := fsutility.GetFileType(linkPath)
+		linkType := fsutility.GetPathType(linkPath)
 		require.Equal(t, fsutility.Notexisting.String(), linkType.String())
-		targetType := fsutility.GetFileType(targetFile)
+		targetType := fsutility.GetPathType(targetFile)
 		require.Equal(t, fsutility.Notexisting.String(), targetType.String())
 	})
 }

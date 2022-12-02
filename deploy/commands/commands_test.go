@@ -39,8 +39,8 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		New(logger).executeCommand(command)
 
 		// Asserts output file
-		outputFileType := fsutility.GetFileType(outputPath)
-		require.Equal(t, fsutility.Regular.String(), outputFileType.String())
+		outputPathType := fsutility.GetPathType(outputPath)
+		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		outputFileData, err := os.ReadFile(outputPath)
 		fstestutility.AssertNoError(err)
@@ -75,8 +75,8 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		New(logger).executeCommand(command)
 
 		// Asserts output file
-		outputFileType := fsutility.GetFileType(outputPath)
-		require.Equal(t, fsutility.Regular.String(), outputFileType.String())
+		outputPathType := fsutility.GetPathType(outputPath)
+		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		outputFileData, err := os.ReadFile(outputPath)
 		fstestutility.AssertNoError(err)
@@ -112,8 +112,8 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 		New(logger).executeCommand(command)
 
 		// Asserts output file
-		outputFileType := fsutility.GetFileType(outputFile)
-		require.Equal(t, fsutility.Regular.String(), outputFileType.String())
+		outputPathType := fsutility.GetPathType(outputFile)
+		require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 		outputFileData, err := os.ReadFile(outputFile)
 		fstestutility.AssertNoError(err)
@@ -140,8 +140,8 @@ func TestFailedExecuteCommand(t *testing.T) {
 		New(logger).executeCommand(command)
 
 		// Asserts output file
-		outputFileType := fsutility.GetFileType(command.OutputPath)
-		require.Equal(t, fsutility.Notexisting.String(), outputFileType.String())
+		outputPathType := fsutility.GetPathType(command.OutputPath)
+		require.Equal(t, fsutility.Notexisting.String(), outputPathType.String())
 	})
 
 	t.Run("CommandInvalid", func(t *testing.T) {
@@ -167,8 +167,8 @@ func TestFailedExecuteCommand(t *testing.T) {
 		New(logger).executeCommand(command)
 
 		// Asserts output file
-		outputFileType := fsutility.GetFileType(command.OutputPath)
-		require.Equal(t, fsutility.Notexisting.String(), outputFileType.String())
+		outputPathType := fsutility.GetPathType(command.OutputPath)
+		require.Equal(t, fsutility.Notexisting.String(), outputPathType.String())
 	})
 
 	t.Run("CommandDoesntCreateOutputFile", func(t *testing.T) {
@@ -226,7 +226,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 		New(logger).executeCommand(command)
 
 		// Asserts that file in path wasn't changed
-		fileInPathType := fsutility.GetFileType(fileInPath)
+		fileInPathType := fsutility.GetPathType(fileInPath)
 		require.Equal(t, fsutility.Regular.String(), fileInPathType.String())
 
 		fileInPathResultData, err := os.ReadFile(fileInPath)
@@ -263,8 +263,8 @@ func TestSkippedExecuteCommand(t *testing.T) {
 	New(logger).executeCommand(command)
 
 	// Asserts output file
-	outputFileType := fsutility.GetFileType(outputFile)
-	require.Equal(t, fsutility.Regular.String(), outputFileType.String())
+	outputPathType := fsutility.GetPathType(outputFile)
+	require.Equal(t, fsutility.Regular.String(), outputPathType.String())
 
 	outputFileData, err := os.ReadFile(outputFile)
 	fstestutility.AssertNoError(err)
