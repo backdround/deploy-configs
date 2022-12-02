@@ -5,43 +5,26 @@ import (
 	"os"
 	"os/user"
 	"path"
+
+	"github.com/backdround/deploy-configs/pkg/fsutility"
 )
 
 // getGitRoot searches a git directory in parent directories
 // descending up to the root.
 func getGitRoot(initialDirectoryToSearch string) (string, error) {
-	isADirectory := func (path string) bool {
-		fileInfo, err := os.Stat(path)
-		return err == nil && fileInfo.IsDir()
-	}
-
-	getDescendingParentDirectories := func(directory string) []string {
-		parents := []string{directory}
-		nextParent := path.Dir(directory)
-		for directory != nextParent {
-			parents = append(parents, nextParent)
-			directory = nextParent
-			nextParent = path.Dir(directory)
-		}
-		return parents
-	}
-
 	// Checks that the input directory is a directory
-	if !isADirectory(initialDirectoryToSearch) {
+	if fsutility.GetPathType(initialDirectoryToSearch) != fsutility.Directory {
 		return "", errors.New("initial directory to search isn't a directory")
 	}
 
-	parentDirectories := getDescendingParentDirectories(initialDirectoryToSearch)
-
-	// Searches a git directory descending to root
-	for _, currentDirectory := range  parentDirectories {
-		hypotheticalGitDirectory := path.Join(currentDirectory, ".git")
-		if isADirectory(hypotheticalGitDirectory) {
-			return currentDirectory, nil
-		}
+	gitPath, err := fsutility.FindEntryDescending(initialDirectoryToSearch,
+		".git", fsutility.Directory)
+	if err != nil {
+		return "", errors.New("git directory wasn't founded")
 	}
+	gitRoot := path.Dir(gitPath)
 
-	return "", errors.New("Git directory wasn't founded")
+	return gitRoot, nil
 }
 
 // Searches the home directory
