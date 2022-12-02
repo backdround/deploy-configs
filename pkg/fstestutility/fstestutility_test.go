@@ -54,3 +54,29 @@ func TestCreateTemporaryFileWithData(t *testing.T) {
 	_, err = os.Stat(path)
 	require.ErrorIs(t, err, os.ErrNotExist)
 }
+
+func TestMakeTempDirectory(t *testing.T) {
+	path, cleanup := fstestutility.MakeTempDirectory("")
+	directoryInfo, err := os.Stat(path)
+
+	// Asserts created directory
+	require.NoError(t, err)
+	require.True(t, directoryInfo.IsDir())
+
+	// Asserts directory deletion
+	cleanup()
+	_, err = os.Stat(path)
+	require.True(t, os.IsNotExist(err))
+}
+
+func TestMakeDirectory(t *testing.T) {
+	directoryBase := fstestutility.GetAvailableTempPath()
+	path := fstestutility.MakeDirectory(directoryBase, "some", "temp", "dir")
+
+	// Asserts created directory
+	directoryInfo, err := os.Stat(path)
+	require.NoError(t, err)
+	require.True(t, directoryInfo.IsDir())
+
+	os.RemoveAll(directoryBase)
+}

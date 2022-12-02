@@ -3,6 +3,7 @@ package fstestutility
 
 import (
 	"os"
+	"path"
 )
 
 func AssertNoError(err error) {
@@ -44,4 +45,21 @@ func CreateTemporaryFileWithData(data string) (path string, cleanup func()) {
 	return path, func() {
 		os.Remove(path)
 	}
+}
+
+// MakeTempDirectory creates temporary directory by pattern and
+// returns cleanup function.
+func MakeTempDirectory(pattern string) (directoryPath string, cleanup func()) {
+	p, err := os.MkdirTemp("", pattern)
+	AssertNoError(err)
+	cleanup = func() { os.Remove(p) }
+	return p, cleanup
+}
+
+// MakeDirectory creates directory by path parts.
+func MakeDirectory(pathParts ...string) string {
+	resultPath := path.Join(pathParts...)
+	err := os.MkdirAll(resultPath, 0755)
+	AssertNoError(err)
+	return resultPath
 }
