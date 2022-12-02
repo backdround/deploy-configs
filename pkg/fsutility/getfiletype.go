@@ -5,7 +5,7 @@ import "os"
 type pathType int
 
 const (
-	Regular pathType = iota
+	Regular pathType = 1 << iota
 	Symlink
 	Directory
 	Notexisting
