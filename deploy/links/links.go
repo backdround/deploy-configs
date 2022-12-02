@@ -123,10 +123,10 @@ func (m linkMaker) makeLink(link Link) {
 	}
 }
 
-// Links creates links which are described in links parameter.
+// CreateLinks creates links which are described in links parameter.
 // If target is a directory it creates appropriate symlinks
 // for all files in that directory
-func (m linkMaker) Links(links []Link) {
+func (m linkMaker) CreateLinks(links []Link) {
 	isDirectory := func(path string) bool {
 		stat, err := os.Lstat(path)
 		if err != nil {

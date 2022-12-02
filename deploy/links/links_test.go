@@ -234,7 +234,7 @@ func TestLinks(t *testing.T) {
 		}
 
 		// Executes the test
-		NewLinkMaker(getLoggerDummy()).Links(links)
+		NewLinkMaker(getLoggerDummy()).CreateLinks(links)
 
 		// Asserts that the links are correct
 		require.True(t, fsutility.IsLinkPointsToDestination(link1Path,
@@ -272,7 +272,7 @@ func TestLinks(t *testing.T) {
 		}
 
 		// Executes the test
-		NewLinkMaker(getLoggerDummy()).Links(links)
+		NewLinkMaker(getLoggerDummy()).CreateLinks(links)
 
 		// Asserts that the links are valid
 		expectedLink1Path := path.Join(linkPath, "target1")
