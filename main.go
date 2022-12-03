@@ -17,7 +17,7 @@ import (
 
 func FindConfig(cwd string, names ...string) (configPath string, err error) {
 	for _, name := range names {
-		types := fsutility.Regular & fsutility.Symlink
+		types := fsutility.Regular | fsutility.Symlink
 		configPath, err = fsutility.FindEntryDescending(cwd, name, types)
 		if err == nil {
 			return configPath, nil
@@ -133,7 +133,8 @@ func main() {
 	CheckFatalError(err, l, "unable to get current work directory:")
 
 	// Searches config path
-	configPath, err := FindConfig(cwd, "deploy-config.yml", "deploy-config.yaml")
+	configPath, err := FindConfig(cwd, "deploy-configs.yml",
+		"deploy-configs.yaml")
 	CheckFatalError(err, l, "")
 
 	// Reads config yaml
