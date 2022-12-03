@@ -46,6 +46,35 @@ func TestFindEntryDescending(t *testing.T) {
 		require.True(t, match)
 	})
 
+	t.Run("IncorrectPathType", func(t *testing.T) {
+		// Creates a test directory tree
+		baseDirectory, cleanup := fstestutility.MakeTempDirectory("test_.*.d")
+		defer cleanup()
+		fstestutility.MakeDirectory(baseDirectory, ".git")
+
+		// Executes the test
+		_, err := FindEntryDescending(baseDirectory, ".git", Regular)
+		require.Error(t, err)
+	})
+
+	t.Run("SeveralPathTypes", func(t *testing.T) {
+		// Creates a test directory tree
+		baseDirectory, cleanup := fstestutility.MakeTempDirectory("test_.*.d")
+		defer cleanup()
+		gitPath := fstestutility.MakeDirectory(baseDirectory, ".git")
+
+		// Executes the test
+		severalPathTypes := Regular | Directory
+		resultDesiredPath, err := FindEntryDescending(baseDirectory, ".git",
+			severalPathTypes)
+
+		// Asserts expectations
+		require.NoError(t, err)
+		match, err := path.Match(resultDesiredPath, gitPath)
+		require.NoError(t, err)
+		require.True(t, match)
+	})
+
 	t.Run("PathDoesntExist", func(t *testing.T) {
 		baseDirectory, cleanup := fstestutility.MakeTempDirectory("test_.*.d")
 		defer cleanup()

@@ -12,7 +12,8 @@ import (
 
 // FindEntryDescending searches an directory entry from the given
 // topSearchPath and descending to root. It uses pathType as bitwise flags.
-func FindEntryDescending(topSearchPath string, entryName string, t pathType) (
+func FindEntryDescending(topSearchPath string, entryName string,
+	types pathType) (
 	desiredPath string, err error) {
 	getDescendingParentDirectories := func(directory string) []string {
 		parents := []string{directory}
@@ -29,7 +30,8 @@ func FindEntryDescending(topSearchPath string, entryName string, t pathType) (
 
 	for _, currentDirectory := range parentDirectories {
 		hypotheticalDesiredPath := path.Join(currentDirectory, entryName)
-		if GetPathType(hypotheticalDesiredPath) & t == t {
+		pathType := GetPathType(hypotheticalDesiredPath)
+		if  pathType & types == pathType {
 			return hypotheticalDesiredPath, nil
 		}
 	}
