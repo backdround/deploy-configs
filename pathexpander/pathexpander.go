@@ -11,6 +11,10 @@ type Logger interface {
 	Warn(message string)
 }
 
+type PathExpander interface {
+	Expand(template string) (string, error)
+}
+
 // pathexpander expands paths substitutions in given templates.
 type pathexpander struct {
 	data map[string]string
