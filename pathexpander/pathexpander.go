@@ -38,19 +38,19 @@ func New(l Logger, searchGitFromDirectory string) *pathexpander {
 	// Adds "git-root" key
 	gitRoot, err := getGitRoot(searchGitFromDirectory)
 	if err == nil {
-		expander.data["gitRoot"] = gitRoot
-		log("gitRoot: " + gitRoot)
+		expander.data["GitRoot"] = gitRoot
+		log("GitRoot: " + gitRoot)
 	} else {
-		warn("Unable to get gitRoot")
+		warn("Unable to get GitRoot")
 	}
 
 	// Adds "home" key
 	homeDirectory, err := getHomeDirectory()
 	if err == nil {
-		expander.data["home"] = homeDirectory
-		log("home: " + homeDirectory)
+		expander.data["Home"] = homeDirectory
+		log("Home: " + homeDirectory)
 	} else {
-		warn("Unable to get home")
+		warn("Unable to get Home")
 	}
 
 	return &expander

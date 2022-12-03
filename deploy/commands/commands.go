@@ -90,8 +90,8 @@ func (e commandExecuter) executeCommand(c Command) {
 
 	// Gets expanded command
 	expandData := map[string]string{
-		"input":  c.InputPath,
-		"output": c.OutputPath,
+		"Input":  c.InputPath,
+		"Output": c.OutputPath,
 	}
 	expandedCommand := bytes.NewBuffer([]byte{})
 	err = commandTemplate.Execute(expandedCommand, expandData)

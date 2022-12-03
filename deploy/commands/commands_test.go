@@ -27,7 +27,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       inputFile,
 			OutputPath:      outputPath,
-			CommandTemplate: "cat {{.input}} > {{.output}}",
+			CommandTemplate: "cat {{.Input}} > {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -63,7 +63,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       inputFile,
 			OutputPath:      outputPath,
-			CommandTemplate: "cat {{.input}} > {{.output}}",
+			CommandTemplate: "cat {{.Input}} > {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -100,7 +100,7 @@ func TestSuccessfulExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       inputFile,
 			OutputPath:      outputFile,
-			CommandTemplate: "cat {{.input}} > {{.output}}",
+			CommandTemplate: "cat {{.Input}} > {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -128,7 +128,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       fstestutility.GetAvailableTempPath(),
 			OutputPath:      fstestutility.GetAvailableTempPath(),
-			CommandTemplate: "cat {{.input}} > {{.output}}",
+			CommandTemplate: "cat {{.Input}} > {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -155,7 +155,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       inputFile,
 			OutputPath:      fstestutility.GetAvailableTempPath(),
-			CommandTemplate: "cattt {{.input}} > {{.output}}",
+			CommandTemplate: "cattt {{.Input}} > {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -183,7 +183,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       inputFile,
 			OutputPath:      fstestutility.GetAvailableTempPath(),
-			CommandTemplate: "cat {{.input}} {{.output}}",
+			CommandTemplate: "cat {{.Input}} {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -214,7 +214,7 @@ func TestFailedExecuteCommand(t *testing.T) {
 			Name:            "test-command",
 			InputPath:       inputFile,
 			OutputPath:      outputPath,
-			CommandTemplate: "cat {{.input}} > {{.output}}",
+			CommandTemplate: "cat {{.Input}} > {{.Output}}",
 		}
 
 		// Creates the logger mock
@@ -251,7 +251,7 @@ func TestSkippedExecuteCommand(t *testing.T) {
 		Name:            "test-command",
 		InputPath:       inputFile,
 		OutputPath:      outputFile,
-		CommandTemplate: "cat {{.input}} > {{.output}}",
+		CommandTemplate: "cat {{.Input}} > {{.Output}}",
 	}
 
 	// Creates the logger mock

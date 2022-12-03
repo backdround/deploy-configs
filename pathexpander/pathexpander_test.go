@@ -40,13 +40,13 @@ func containsString(str string) interface{} {
 
 func TestExpandWithoutGitRoot(t *testing.T) {
 	// Makes templates to expand
-	path1 := "{{.gitRoot}}/configs/file1"
-	path2 := "{{.home}}/.config/file1"
+	path1 := "{{.GitRoot}}/configs/file1"
+	path2 := "{{.Home}}/.config/file1"
 
 	// Creates a logger
 	logger := &LoggerMock{}
-	logger.On("Warn", containsString("gitRoot")).Once()
-	logger.On("Log", containsString("home")).Once()
+	logger.On("Warn", containsString("GitRoot")).Once()
+	logger.On("Log", containsString("Home")).Once()
 	defer logger.AssertExpectations(t)
 
 	// Executes the test
@@ -62,7 +62,7 @@ func TestExpandWithoutGitRoot(t *testing.T) {
 func TestExpandInvalidTemplate(t *testing.T) {
 	// Executes the test
 	expander := New(getLoggerDummy(), os.TempDir())
-	_, err1 := expander.Expand("{{home}}")
+	_, err1 := expander.Expand("{{Home}}")
 
 	// Asserts expansions
 	require.Error(t, err1)
@@ -79,13 +79,13 @@ func TestExpandWithGitRoot(t *testing.T) {
 	fstestutility.AssertNoError(err)
 
 	// Makes templates to expand
-	path1 := "{{.gitRoot}}/configs/file1"
-	path2 := "{{.home}}/.config/file1"
+	path1 := "{{.GitRoot}}/configs/file1"
+	path2 := "{{.Home}}/.config/file1"
 
 	// Creates a logger
 	logger := &LoggerMock{}
-	logger.On("Log", containsString("gitRoot")).Once()
-	logger.On("Log", containsString("home")).Once()
+	logger.On("Log", containsString("GitRoot")).Once()
+	logger.On("Log", containsString("Home")).Once()
 	defer logger.AssertExpectations(t)
 
 	// Executes the test
