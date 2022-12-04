@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/backdround/deploy-configs/config"
-	"github.com/backdround/deploy-configs/config/validate"
 	"github.com/backdround/deploy-configs/dataconverter"
 	"github.com/backdround/deploy-configs/deploy/commands"
 	"github.com/backdround/deploy-configs/deploy/links"
@@ -55,19 +54,15 @@ func main() {
 	// Searches config path
 	configPath, err := FindConfig(cwd, "deploy-configs.yml",
 		"deploy-configs.yaml")
-	CheckFatalError(err, l, "")
+	CheckFatalError(err, l, "error occurs while config searching")
 
 	// Reads config yaml
 	configData, err := os.ReadFile(configPath)
-	CheckFatalError(err, l, "unable to get config data")
+	CheckFatalError(err, l, "unable to read config data")
 
-	// Validates config yaml
-	err = validate.Validate(configData)
-	CheckFatalError(err, l, "fail to validate config data")
-
-	// Gets config data
+	// Parse config data
 	config, err := config.Get(configData, configInstance)
-	CheckFatalError(err, l, "fail to get config data")
+	CheckFatalError(err, l, "fail to parse config data")
 
 	// Restructures config to deploy data
 	pathExpander := pathexpander.New(l, cwd)
