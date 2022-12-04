@@ -26,7 +26,10 @@ func Get(dataYaml []byte, instance string) (*Config, error) {
 	fullConfig := fullConfigData{
 		Instances: make(map[string]Config),
 	}
-	yaml.Unmarshal(dataYaml, &fullConfig)
+	err = yaml.Unmarshal(dataYaml, &fullConfig)
+	if err != nil {
+		return nil, err
+	}
 
 	// Gets config for given instance
 	config, ok := fullConfig.Instances[instance]
