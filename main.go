@@ -2,11 +2,11 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
 	"github.com/backdround/deploy-configs/config"
 	"github.com/backdround/deploy-configs/config/validate"
+	"github.com/backdround/deploy-configs/dataconverter"
 	"github.com/backdround/deploy-configs/deploy/commands"
 	"github.com/backdround/deploy-configs/deploy/links"
 	"github.com/backdround/deploy-configs/deploy/templates"
@@ -35,86 +35,6 @@ func CheckFatalError(err error, l logger.Logger, message string) {
 		l.Fail(err.Error())
 		os.Exit(1)
 	}
-}
-
-type MustPathExpander = func(unitName string, unitDescription string,
-	templateToExpand string) string
-
-// RestructureLinks resturctures config links to deploy links
-func RestructureLinks(mustPathExpand MustPathExpander,
-	configLinks map[string]config.Link) []links.Link {
-	// Restructures config links to deploy links
-	newLinks := []links.Link{}
-	for linkName, link := range configLinks {
-		newStructuredLink := links.Link{
-			Name:       linkName,
-			TargetPath: link.TargetPath,
-			LinkPath:   link.LinkPath,
-		}
-		newLinks = append(newLinks, newStructuredLink)
-	}
-
-	// Expands links paths
-	for i, link := range newLinks {
-		newLinks[i].TargetPath = mustPathExpand(link.Name, "link",
-			link.TargetPath)
-		newLinks[i].LinkPath = mustPathExpand(link.Name, "link",
-			link.LinkPath)
-	}
-
-	return newLinks
-}
-
-// RestructureTemplates resturctures config templates to deploy templates
-func RestructureTemplates(mustPathExpand MustPathExpander,
-	configTemplates map[string]config.Template) []templates.Template {
-	// Restructures config templates to deploy templates
-	newTemplates := []templates.Template{}
-	for templateName, template := range configTemplates {
-		newStructuredTemplate := templates.Template{
-			Name:       templateName,
-			InputPath:  template.InputPath,
-			OutputPath: template.OutputPath,
-			Data:       template.Data,
-		}
-		newTemplates = append(newTemplates, newStructuredTemplate)
-	}
-
-	// Expands templates paths
-	for i, template := range newTemplates {
-		newTemplates[i].InputPath = mustPathExpand(template.Name, "template",
-			template.InputPath)
-		newTemplates[i].OutputPath = mustPathExpand(template.Name, "template",
-			template.OutputPath)
-	}
-
-	return newTemplates
-}
-
-// RestructureCommands resturctures config commands to deploy commands
-func RestructureCommands(mustPathExpand MustPathExpander,
-	configCommands map[string]config.Command) []commands.Command {
-	// Restructures config commands to deploy commands
-	newCommands := []commands.Command{}
-	for commandName, command := range configCommands {
-		newStructuredCommand := commands.Command{
-			Name:            commandName,
-			InputPath:       command.InputPath,
-			OutputPath:      command.OutputPath,
-			CommandTemplate: command.Command,
-		}
-		newCommands = append(newCommands, newStructuredCommand)
-	}
-
-	// Expands commands paths
-	for i, command := range newCommands {
-		newCommands[i].InputPath = mustPathExpand(command.Name, "command",
-			command.InputPath)
-		newCommands[i].OutputPath = mustPathExpand(command.Name, "command",
-			command.OutputPath)
-	}
-
-	return newCommands
 }
 
 func main() {
@@ -149,23 +69,22 @@ func main() {
 	config, err := config.Get(configData, configInstance)
 	CheckFatalError(err, l, "fail to get config data")
 
-	// Creates auxiliaries to expand
-	pathExpander := pathexpander.New(l, cwd)
-	mustExpand := func(unitName string, unitDescription string,
-		templateToExpand string) string {
-		expandedTemplate, err := pathExpander.Expand(templateToExpand)
-		if err != nil {
-			message := fmt.Sprintf("unable to expand %v %q:\n%v",
-				unitDescription, unitName, templateToExpand)
-			CheckFatalError(err, l, message)
-		}
-		return expandedTemplate
-	}
-
 	// Restructures config to deploy data
-	restructuredLinks := RestructureLinks(mustExpand, config.Links)
-	restructuredTemplates := RestructureTemplates(mustExpand, config.Templates)
-	restructuredCommands := RestructureCommands(mustExpand, config.Commands)
+	pathExpander := pathexpander.New(l, cwd)
+	dataConverter := dataconverter.New(l, pathExpander)
+
+	restructuredLinks, err := dataConverter.RestructureLinks(config.Links)
+	CheckFatalError(err, l, "fail to convert config links to deploy links")
+
+	restructuredTemplates, err := dataConverter.RestructureTemplates(
+		config.Templates)
+	CheckFatalError(err, l,
+		"fail to convert config templates to deploy templates")
+
+	restructuredCommands, err := dataConverter.RestructureCommands(
+		config.Commands)
+	CheckFatalError(err, l,
+		"fail to convert config commands to deploy commands")
 
 	// Deploys links
 	linkMaker := links.NewLinkMaker(l)
