@@ -4,8 +4,8 @@ package config
 
 // Link represents symbolic link from user config
 type Link struct {
-	TargetPath string
-	LinkPath   string
+	TargetPath string `yaml:"target"`
+	LinkPath   string `yaml:"link"`
 }
 
 // Command represents command from user config

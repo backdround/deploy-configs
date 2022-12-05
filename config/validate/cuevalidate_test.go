@@ -70,7 +70,8 @@ func TestInvalidData(t *testing.T) {
 		  instances:
 		    instance:
 		      links:
-		        - ["./file1.txt", "./link"]
+		        target: ./file1.txt
+		        link: ./link
 		`)
 		assertNoTab(data)
 
@@ -123,7 +124,9 @@ func TestSimpleData(t *testing.T) {
 	  instances:
 	    instance1:
 	      links:
-	        link1: ["./file1.txt", "./link"]
+	        link1:
+	          target: ./file1.txt
+	          link: ./link
 	      commands:
 	        command1:
 	          input: "./file.txt"
@@ -138,7 +141,6 @@ func TestSimpleData(t *testing.T) {
 	            nested-variable:
 	              nested1: "value"
 	              nested2: "value"
-
 	`)
 	assertNoTab(data)
 

@@ -58,8 +58,12 @@ func TestLinksConfig(t *testing.T) {
 	  instances:
 	    instance1:
 	      links:
-	        link1: ["./file1.txt", "./link1"]
-	        link2: ["./file2.txt", "./link2"]
+	        link1:
+	          target: ./file1.txt
+	          link: ./link1
+	        link2:
+	          target: ./file2.txt
+	          link: ./link2
 	      commands:
 	      templates:
 	`)

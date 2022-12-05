@@ -1,6 +1,9 @@
-// List of symbolic lists to create
+// List of symbolic links to create
 #Links: {
-	[string]: [string, string]
+	[string]: {
+		target: string
+		link: string
+	}
 }
 
 // List of commands to execute
