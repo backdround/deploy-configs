@@ -9,7 +9,7 @@ import (
 // to temporary files
 type tempPathSearcher struct {
 	issuedPaths map[string]bool
-	mutex sync.Mutex
+	mutex       sync.Mutex
 }
 
 func (searcher *tempPathSearcher) getUnoccupiedPath() string {
@@ -37,7 +37,7 @@ func (searcher *tempPathSearcher) getUnoccupiedPath() string {
 
 var tempPathSearcherInstance = tempPathSearcher{
 	issuedPaths: make(map[string]bool),
-	mutex: sync.Mutex{},
+	mutex:       sync.Mutex{},
 }
 
 // GetAvailableTempPath returns path to available (nonexistent)

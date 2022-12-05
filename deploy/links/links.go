@@ -157,7 +157,7 @@ func (m linkMaker) CreateLinks(links []Link) {
 			specificLinkPath := path.Join(link.LinkPath, targetFileName)
 
 			specificLink := Link{
-				Name: specificName,
+				Name:       specificName,
 				TargetPath: specificTargetFile,
 				LinkPath:   specificLinkPath,
 			}

@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/backdround/deploy-configs/pkg/fsutility"
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
+	"github.com/backdround/deploy-configs/pkg/fsutility"
 )
 
 func TestSuccessfulMakeTemplate(t *testing.T) {

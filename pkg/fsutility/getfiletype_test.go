@@ -1,11 +1,11 @@
 package fsutility
 
 import (
-	"testing"
 	"os"
+	"testing"
 
-	"github.com/stretchr/testify/require"
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNotExistingType(t *testing.T) {
@@ -50,12 +50,12 @@ func TestSymlinkType(t *testing.T) {
 	})
 }
 
-func TestDirectoryType (t *testing.T) {
+func TestDirectoryType(t *testing.T) {
 	resultType := GetPathType(os.TempDir())
 	require.Equal(t, Directory.String(), resultType.String())
 }
 
-func TestUnknownType (t *testing.T) {
+func TestUnknownType(t *testing.T) {
 	resultType := GetPathType("/dev/null")
 	require.Equal(t, Unknown.String(), resultType.String())
 }

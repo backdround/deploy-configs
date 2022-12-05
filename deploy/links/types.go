@@ -3,7 +3,7 @@ package links
 // Link is a stracture that represents symbolic link
 // to create by this package.
 type Link struct {
-	Name string
+	Name       string
 	TargetPath string
 	LinkPath   string
 }

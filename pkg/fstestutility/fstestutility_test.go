@@ -3,14 +3,14 @@ package fstestutility_test
 import (
 	"os"
 
-	"testing"
 	"github.com/stretchr/testify/require"
+	"testing"
 
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
 )
 
 func TestCreateTemporaryFiles(t *testing.T) {
-	t.Run("CreateFiles", func (t *testing.T) {
+	t.Run("CreateFiles", func(t *testing.T) {
 		// Creates files
 		file1 := "go_test.simplefile.*.txt"
 		file2 := "go_test.simplefile.*.txt"
@@ -27,7 +27,7 @@ func TestCreateTemporaryFiles(t *testing.T) {
 		require.True(t, fileInfo2.Mode().IsRegular())
 	})
 
-	t.Run("CleanupDeletesFiles", func (t *testing.T) {
+	t.Run("CleanupDeletesFiles", func(t *testing.T) {
 		// Creates a file
 		file := "go_test.simplefile.*.txt"
 		cleanup := fstestutility.CreateTemporaryFiles(&file)

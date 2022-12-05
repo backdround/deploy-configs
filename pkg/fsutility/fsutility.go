@@ -31,7 +31,7 @@ func FindEntryDescending(topSearchPath string, entryName string,
 	for _, currentDirectory := range parentDirectories {
 		hypotheticalDesiredPath := path.Join(currentDirectory, entryName)
 		pathType := GetPathType(hypotheticalDesiredPath)
-		if  pathType & types == pathType {
+		if pathType&types == pathType {
 			return hypotheticalDesiredPath, nil
 		}
 	}
@@ -41,7 +41,7 @@ func FindEntryDescending(topSearchPath string, entryName string,
 
 // GetFileHash calculates sha512 with file data.
 // If file doesn't exist then it returns empty slice.
-func GetFileHash (path string) []byte {
+func GetFileHash(path string) []byte {
 	// Opens file
 	file, err := os.Open(path)
 	if err != nil {

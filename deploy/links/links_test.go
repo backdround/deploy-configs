@@ -8,8 +8,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/backdround/deploy-configs/pkg/fsutility"
 	"github.com/backdround/deploy-configs/pkg/fstestutility"
+	"github.com/backdround/deploy-configs/pkg/fsutility"
 )
 
 ////////////////////////////////////////////////////////////
@@ -223,14 +223,14 @@ func TestLinks(t *testing.T) {
 		defer os.Remove(link2Path)
 
 		links := []Link{{
-				Name: "link1",
-				TargetPath: targetFile,
-				LinkPath:   link1Path,
-			},{
-				Name: "link1",
-				TargetPath: targetFile,
-				LinkPath:   link2Path,
-			},
+			Name:       "link1",
+			TargetPath: targetFile,
+			LinkPath:   link1Path,
+		}, {
+			Name:       "link1",
+			TargetPath: targetFile,
+			LinkPath:   link2Path,
+		},
 		}
 
 		// Executes the test
@@ -265,10 +265,10 @@ func TestLinks(t *testing.T) {
 
 		// Makes data
 		links := []Link{{
-				Name: "directory",
-				TargetPath: targetDirectory,
-				LinkPath:   linkPath,
-			},
+			Name:       "directory",
+			TargetPath: targetDirectory,
+			LinkPath:   linkPath,
+		},
 		}
 
 		// Executes the test
