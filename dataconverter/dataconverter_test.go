@@ -45,7 +45,7 @@ func TestSuccessfulLinkConverting(t *testing.T) {
 		},
 	}
 
-	// Makes convertion
+	// Makes conversion
 	dataConverter := New(fakeLogger{}, lenExpander{})
 	deployLinks, err := dataConverter.RestructureLinks(configLinks)
 
@@ -66,7 +66,7 @@ func TestFailedLinkConverting(t *testing.T) {
 		},
 	}
 
-	// Fails convertion
+	// Fails conversion
 	dataConverter := New(fakeLogger{}, errorExpander{})
 	deployLinks, err := dataConverter.RestructureLinks(configLinks)
 
@@ -88,7 +88,7 @@ func TestSuccessfulTemplateConverting(t *testing.T) {
 		},
 	}
 
-	// Makes convertion
+	// Makes conversion
 	dataConverter := New(fakeLogger{}, lenExpander{})
 	deployTemplates, err := dataConverter.RestructureTemplates(configTemplates)
 
@@ -111,7 +111,7 @@ func TestFailedTemplateConverting(t *testing.T) {
 		},
 	}
 
-	// Fails convertion
+	// Fails conversion
 	dataConverter := New(fakeLogger{}, errorExpander{})
 	deployTemplates, err := dataConverter.RestructureTemplates(configTemplates)
 
@@ -133,7 +133,7 @@ func TestSuccessfulCommandsConverting(t *testing.T) {
 		},
 	}
 
-	// Makes convertion
+	// Makes conversion
 	dataConverter := New(fakeLogger{}, lenExpander{})
 	deployCommands, err := dataConverter.RestructureCommands(configCommands)
 
@@ -156,7 +156,7 @@ func TestFailedCommandsConverting(t *testing.T) {
 		},
 	}
 
-	// Fails convertion
+	// Fails conversion
 	dataConverter := New(fakeLogger{}, errorExpander{})
 	deployCommands, err := dataConverter.RestructureCommands(configCommands)
 
