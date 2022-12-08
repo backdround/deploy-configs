@@ -120,7 +120,7 @@ func (e commandExecuter) executeCommand(c Command) {
 	outputPathType = fsutility.GetPathType(c.OutputPath)
 	if outputPathType != fsutility.Regular {
 		message := fmt.Sprintf("command didn't create file. output:\n%v",
-			cmdOutput)
+			string(cmdOutput))
 		e.logFail(c, message)
 		return
 	}
