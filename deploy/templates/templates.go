@@ -10,6 +10,7 @@ import (
 	templatePackage "text/template"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
+	"github.com/backdround/go-indent"
 )
 
 type templateMaker struct {
@@ -22,27 +23,33 @@ func NewTemplateMaker(logger Logger) templateMaker {
 	}
 }
 
+func getDescription(template Template) string {
+	return fmt.Sprintf("input: %q\noutput: %q\ndata: %q",
+		template.InputPath, template.OutputPath, template.Data)
+}
+
+func shift(message string, count int) string {
+	return indent.Indent(message, "  ", count)
+}
+
 func (m templateMaker) logFail(template Template, reason string) {
-	description := fmt.Sprintf("[%q, %q]",
-		template.InputPath, template.OutputPath)
-	message := fmt.Sprintf("Unable to expand %q link:\n\t%v\n\t\t%v",
-		template.Name, description, reason)
+	description := shift(getDescription(template), 1)
+	errorMessage := shift("error: " + reason, 2)
+
+	message := fmt.Sprintf("Unable to expand %q template:\n%v\n%v",
+		template.Name, description, errorMessage)
 	m.logger.Fail(message)
 }
 
 func (m templateMaker) logSuccess(template Template) {
-	description := fmt.Sprintf("[%q, %q]",
-		template.InputPath, template.OutputPath)
-	message := fmt.Sprintf("Template %q expanded:\n\t%v",
-		template.Name, description)
+	message := fmt.Sprintf("Template %q expanded:\n%v",
+		template.Name,
+		shift(getDescription(template), 1))
 	m.logger.Success(message)
 }
 
 func (m templateMaker) logSkip(template Template) {
-	description := fmt.Sprintf("[%q, %q]",
-		template.InputPath, template.OutputPath)
-	message := fmt.Sprintf("Template %q skipped:\n\t%v",
-		template.Name, description)
+	message := fmt.Sprintf("Template %q skipped", template.Name)
 	m.logger.Log(message)
 }
 

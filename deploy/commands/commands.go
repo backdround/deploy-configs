@@ -12,6 +12,7 @@ import (
 	"text/template"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
+	"github.com/backdround/go-indent"
 )
 
 type commandExecuter struct {
@@ -24,26 +25,32 @@ func NewCommandExecuter(logger Logger) *commandExecuter {
 	}
 }
 
-func (e commandExecuter) getDescription(command Command) string {
-	return fmt.Sprintf("command %q [%q, %q]",
-		command.CommandTemplate, command.InputPath, command.OutputPath)
+func getDescription(command Command) string {
+	return fmt.Sprintf("input: %q\noutput: %q\ncommand: %q",
+		command.InputPath, command.OutputPath, command.CommandTemplate)
+}
+
+func shift(message string, count int) string {
+	return indent.Indent(message, "  ", count)
 }
 
 func (e commandExecuter) logFail(command Command, reason string) {
-	message := fmt.Sprintf("Unable to expand %q link:\n\t%v\n\t\t%v",
-		command.Name, e.getDescription(command), reason)
+	description := shift(getDescription(command), 1)
+	errorMessage := shift("error: " + reason, 2)
+
+	message := fmt.Sprintf("Unable to execute %q command:\n%v\n%v\n",
+		command.Name, description, errorMessage)
 	e.logger.Fail(message)
 }
 
 func (e commandExecuter) logSuccess(command Command) {
-	message := fmt.Sprintf("Command %q is executed:\n\t%v",
-		command.Name, e.getDescription(command))
+	message := fmt.Sprintf("Command %q is executed:\n%v",
+		command.Name, shift(getDescription(command), 1))
 	e.logger.Success(message)
 }
 
 func (e commandExecuter) logSkip(command Command) {
-	message := fmt.Sprintf("Command %q is skipped:\n\t%v",
-		command.Name, e.getDescription(command))
+	message := fmt.Sprintf("Command %q is skipped", command.Name)
 	e.logger.Log(message)
 }
 
@@ -65,7 +72,7 @@ func (e commandExecuter) executeCommand(c Command) {
 	if outputPathType == fsutility.Regular {
 		err := os.Remove(c.OutputPath)
 		if err != nil {
-			message := fmt.Sprintf("unable to remove output file:\n\t%v",
+			message := fmt.Sprintf("unable to remove output file:\n%v",
 				err.Error())
 			e.logFail(c, message)
 			return

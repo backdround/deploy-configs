@@ -9,6 +9,7 @@ import (
 	"path"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
+	"github.com/backdround/go-indent"
 )
 
 ////////////////////////////////////////////////////////////
@@ -65,22 +66,32 @@ func NewLinkMaker(logger Logger) linkMaker {
 	}
 }
 
+func getDescription(link Link) string {
+	return fmt.Sprintf("target: %q\nlink: %q",
+		link.TargetPath, link.LinkPath)
+}
+
+func shift(message string, count int) string {
+	return indent.Indent(message, "  ", count)
+}
+
 func (m linkMaker) logFail(link Link, reason string) {
-	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
-	message := fmt.Sprintf("Unable to create %q link:\n\t%v\n\t\t%v",
-		link.Name, linkDescription, reason)
+	description := shift(getDescription(link), 1)
+	errorMessage := shift("error: " + reason, 2)
+
+	message := fmt.Sprintf("Unable to create %q link:\n%v\n%v",
+		link.Name, description, errorMessage)
 	m.logger.Fail(message)
 }
 
 func (m linkMaker) logSuccess(link Link) {
-	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
-	message := fmt.Sprintf("Link %q created:\n\t%v", link.Name, linkDescription)
+	message := fmt.Sprintf("Link %q created:\n%v", link.Name,
+		shift(getDescription(link), 1))
 	m.logger.Success(message)
 }
 
 func (m linkMaker) logSkip(link Link) {
-	linkDescription := fmt.Sprintf("[%q, %q]", link.TargetPath, link.LinkPath)
-	message := fmt.Sprintf("Link %q skipped:\n\t%v", link.Name, linkDescription)
+	message := fmt.Sprintf("Link %q skipped", link.Name)
 	m.logger.Log(message)
 }
 
