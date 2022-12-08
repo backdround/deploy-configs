@@ -69,7 +69,7 @@ func (e commandExecuter) executeCommand(c Command) {
 
 	// Removes the old output file if it exists
 	outputPathType := fsutility.GetPathType(c.OutputPath)
-	if outputPathType == fsutility.Regular {
+	if outputPathType != fsutility.Notexisting {
 		err := os.Remove(c.OutputPath)
 		if err != nil {
 			message := fmt.Sprintf("unable to remove output file:\n%v",
