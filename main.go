@@ -4,14 +4,14 @@ import (
 	"errors"
 	"os"
 
-	"github.com/backdround/deploy-configs/config"
-	"github.com/backdround/deploy-configs/dataconverter"
-	"github.com/backdround/deploy-configs/deploy/commands"
-	"github.com/backdround/deploy-configs/deploy/links"
-	"github.com/backdround/deploy-configs/deploy/templates"
-	"github.com/backdround/deploy-configs/logger"
-	"github.com/backdround/deploy-configs/pathexpander"
+	"github.com/backdround/deploy-configs/internal/config"
+	"github.com/backdround/deploy-configs/internal/dataconverter"
+	"github.com/backdround/deploy-configs/internal/deploy/commands"
+	"github.com/backdround/deploy-configs/internal/deploy/links"
+	"github.com/backdround/deploy-configs/internal/deploy/templates"
+	"github.com/backdround/deploy-configs/internal/pathexpander"
 	"github.com/backdround/deploy-configs/pkg/fsutility"
+	"github.com/backdround/deploy-configs/pkg/logger"
 )
 
 func FindConfig(cwd string, names ...string) (configPath string, err error) {

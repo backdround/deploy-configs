@@ -2,7 +2,7 @@
 package config
 
 import (
-	"github.com/backdround/deploy-configs/config/validate"
+	"github.com/backdround/deploy-configs/internal/config/validate"
 	"gopkg.in/yaml.v3"
 
 	"fmt"

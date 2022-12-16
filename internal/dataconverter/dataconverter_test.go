@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/backdround/deploy-configs/config"
+	"github.com/backdround/deploy-configs/internal/config"
 	"github.com/stretchr/testify/require"
 )
 

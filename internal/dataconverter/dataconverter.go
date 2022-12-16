@@ -5,11 +5,11 @@ package dataconverter
 import (
 	"fmt"
 
-	"github.com/backdround/deploy-configs/config"
-	"github.com/backdround/deploy-configs/deploy/commands"
-	"github.com/backdround/deploy-configs/deploy/links"
-	"github.com/backdround/deploy-configs/deploy/templates"
-	"github.com/backdround/deploy-configs/pathexpander"
+	"github.com/backdround/deploy-configs/internal/config"
+	"github.com/backdround/deploy-configs/internal/deploy/commands"
+	"github.com/backdround/deploy-configs/internal/deploy/links"
+	"github.com/backdround/deploy-configs/internal/deploy/templates"
+	"github.com/backdround/deploy-configs/internal/pathexpander"
 )
 
 type Logger interface {
