@@ -26,60 +26,80 @@ func FindConfig(cwd string, names ...string) (configPath string, err error) {
 	return "", errors.New("unable to find config path")
 }
 
-func CheckFatalError(err error, l logger.Logger, message string) {
-	if err != nil {
-		if len(message) != 0 {
-			l.Fail(message)
-		}
-		l.Fail(err.Error())
-		os.Exit(1)
-	}
-}
-
 func main() {
 	l := logger.New()
+	returnCode := Main(l)
+	os.Exit(returnCode)
+}
 
+func Main(l logger.Logger) int {
 	// Gets config instance
 	userInput := os.Args[1:]
 	if len(userInput) != 1 {
 		l.Fail("expect config instance as argument")
-		os.Exit(1)
+		return 1
 	}
 	configInstance := userInput[0]
 
 	// Gets cwd
 	cwd, err := os.Getwd()
-	CheckFatalError(err, l, "unable to get current work directory:")
+	if err != nil {
+		l.Fail("unable to get current work directory:")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	// Searches config path
 	configPath, err := FindConfig(cwd, "deploy-configs.yml",
 		"deploy-configs.yaml")
-	CheckFatalError(err, l, "error occurs while config searching")
+	if err != nil {
+		l.Fail("error occurs while config searching")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	// Reads config yaml
 	configData, err := os.ReadFile(configPath)
-	CheckFatalError(err, l, "unable to read config data")
+	if err != nil {
+		l.Fail("unable to read config data")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	// Parse config data
 	config, err := config.Get(configData, configInstance)
-	CheckFatalError(err, l, "fail to parse config data")
+	if err != nil {
+		l.Fail("fail to parse config data")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	// Restructures config to deploy data
 	pathExpander := pathexpander.New(l, cwd)
 	dataConverter := dataconverter.New(l, pathExpander)
 
 	restructuredLinks, err := dataConverter.RestructureLinks(config.Links)
-	CheckFatalError(err, l, "fail to convert config links to deploy links")
+	if err != nil {
+		l.Fail("fail to convert config links to deploy links")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	restructuredTemplates, err := dataConverter.RestructureTemplates(
 		config.Templates)
-	CheckFatalError(err, l,
-		"fail to convert config templates to deploy templates")
+	if err != nil {
+		l.Fail("fail to convert config templates to deploy templates")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	restructuredCommands, err := dataConverter.RestructureCommands(
 		config.Commands)
-	CheckFatalError(err, l,
-		"fail to convert config commands to deploy commands")
+	if err != nil {
+		l.Fail("fail to convert config commands to deploy commands")
+		l.Fail(err.Error())
+		return 1
+	}
 
 	// Deploys links
 	linkMaker := links.NewLinkMaker(l)
@@ -95,4 +115,6 @@ func main() {
 	commandExecuter := commands.NewCommandExecuter(l)
 	l.Title("Execute commands")
 	commandExecuter.ExecuteCommands(restructuredCommands)
+
+	return 0
 }
