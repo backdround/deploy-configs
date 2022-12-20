@@ -23,6 +23,7 @@ const (
 	proceedRemove
 	stopTargetDoesntExist
 	stopLinkFileExists
+	stopLinkPathExists
 	skip
 )
 
@@ -39,8 +40,10 @@ func linkDecisionMaker(link Link) linkAction {
 	switch linkType {
 	case fsutility.Notexisting:
 		return proceedNew
-	case fsutility.Regular, fsutility.Directory, fsutility.Unknown:
+	case fsutility.Regular:
 		return stopLinkFileExists
+	case fsutility.Directory, fsutility.Unknown:
+		return stopLinkPathExists
 	case fsutility.Symlink:
 		if fsutility.IsLinkPointsToDestination(link.LinkPath, link.TargetPath) {
 			return skip
@@ -133,6 +136,9 @@ func (m linkMaker) makeLink(link Link) (success bool) {
 		return false
 	case stopLinkFileExists:
 		m.logFail(link, "Link file already exists")
+		return false
+	case stopLinkPathExists:
+		m.logFail(link, "Link path exists")
 		return false
 	case skip:
 		m.logSkip(link)

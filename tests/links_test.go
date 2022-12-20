@@ -188,7 +188,7 @@ func TestLinks(t *testing.T) {
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
 					link: "{Root}/link-path/link1"
-						error: Link path already exists
+						error: Link path exists
 			`
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
