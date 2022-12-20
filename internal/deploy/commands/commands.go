@@ -36,7 +36,7 @@ func shift(message string, count int) string {
 
 func (e commandExecuter) logFail(command Command, reason string) {
 	description := shift(getDescription(command), 1)
-	errorMessage := shift("error: " + reason, 2)
+	errorMessage := shift("error: "+reason, 2)
 
 	message := fmt.Sprintf("Unable to execute %q command:\n%v\n%v\n",
 		command.Name, description, errorMessage)

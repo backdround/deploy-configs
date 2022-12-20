@@ -84,7 +84,7 @@ func TestLinks(t *testing.T) {
 	})
 
 	t.Run("Skip", func(t *testing.T) {
-			fileTree := `
+		fileTree := `
 				.git:
 				link.conf:
 					type: file
@@ -102,10 +102,10 @@ func TestLinks(t *testing.T) {
 										link: "{{.GitRoot}}/link1"
 			`
 
-			c := testcase.RunCase(t, fileTree, "./run", "pc1")
-			c.RequireReturnCode(t, 0)
-			c.RequireFileTree(t, fileTree)
-			c.RequireLogMessage(t, `Link "link1" skipped`)
+		c := testcase.RunCase(t, fileTree, "./run", "pc1")
+		c.RequireReturnCode(t, 0)
+		c.RequireFileTree(t, fileTree)
+		c.RequireLogMessage(t, `Link "link1" skipped`)
 	})
 
 	t.Run("Fail", func(t *testing.T) {

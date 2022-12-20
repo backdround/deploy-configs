@@ -80,7 +80,7 @@ func shift(message string, count int) string {
 
 func (m linkMaker) logFail(link Link, reason string) {
 	description := shift(getDescription(link), 1)
-	errorMessage := shift("error: " + reason, 2)
+	errorMessage := shift("error: "+reason, 2)
 
 	message := fmt.Sprintf("Unable to create %q link:\n%v\n%v",
 		link.Name, description, errorMessage)

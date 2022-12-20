@@ -34,7 +34,7 @@ func shift(message string, count int) string {
 
 func (m templateMaker) logFail(template Template, reason string) {
 	description := shift(getDescription(template), 1)
-	errorMessage := shift("error: " + reason, 2)
+	errorMessage := shift("error: "+reason, 2)
 
 	message := fmt.Sprintf("Unable to expand %q template:\n%v\n%v",
 		template.Name, description, errorMessage)

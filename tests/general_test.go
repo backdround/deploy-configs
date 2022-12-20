@@ -3,8 +3,8 @@ package tests_test
 import (
 	"testing"
 
-	"github.com/backdround/go-indent"
 	"github.com/backdround/deploy-configs/tests/testcase"
+	"github.com/backdround/go-indent"
 )
 
 func TestInvalidArguments(t *testing.T) {
@@ -102,7 +102,6 @@ func TestComplex(t *testing.T) {
 			output: "{Root}/deploy/command1"
 			command: "cat {{.Input}} > {{.Output}}"
 	`
-
 
 	c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 
