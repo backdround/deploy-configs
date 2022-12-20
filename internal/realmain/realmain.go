@@ -30,7 +30,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	// Gets config instance
 	userInput := cliArguments[1:]
 	if len(userInput) != 1 {
-		l.Fail("expected config instance as argument")
+		l.Fail("Expected config instance as argument")
 		return 1
 	}
 	configInstance := userInput[0]
@@ -38,7 +38,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	// Gets cwd
 	cwd, err := os.Getwd()
 	if err != nil {
-		l.Fail("unable to get current work directory:")
+		l.Fail("Unable to get current work directory:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -47,7 +47,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	configPath, err := FindConfig(cwd, "deploy-configs.yml",
 		"deploy-configs.yaml")
 	if err != nil {
-		l.Fail("error occurs while config searching:")
+		l.Fail("Error occurs while config searching:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -55,7 +55,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	// Reads config yaml
 	configData, err := os.ReadFile(configPath)
 	if err != nil {
-		l.Fail("unable to read config data:")
+		l.Fail("Unable to read config data:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -63,7 +63,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	// Parse config data
 	config, err := config.Get(configData, configInstance)
 	if err != nil {
-		l.Fail("fail to parse config data:")
+		l.Fail("Fail to parse config data:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -74,7 +74,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 
 	restructuredLinks, err := dataConverter.RestructureLinks(config.Links)
 	if err != nil {
-		l.Fail("invalid config links:")
+		l.Fail("Invalid config links:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -82,7 +82,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	restructuredTemplates, err := dataConverter.RestructureTemplates(
 		config.Templates)
 	if err != nil {
-		l.Fail("invalid config templates:")
+		l.Fail("Invalid config templates:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -90,7 +90,7 @@ func Main(l logger.Logger, cliArguments []string) int {
 	restructuredCommands, err := dataConverter.RestructureCommands(
 		config.Commands)
 	if err != nil {
-		l.Fail("invalid config commands:")
+		l.Fail("Invalid config commands:")
 		l.Fail(err.Error())
 		return 1
 	}

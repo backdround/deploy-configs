@@ -11,14 +11,14 @@ func TestInvalidArguments(t *testing.T) {
 	c := testcase.RunCase(t, "", "./run")
 
 	c.RequireReturnCode(t, 1)
-	c.RequireFailMessage(t, "expected config instance as argument")
+	c.RequireFailMessage(t, "Expected config instance as argument")
 }
 
 func TestConfigNotFound(t *testing.T) {
 	c := testcase.RunCase(t, "", "./run", "pc1")
 
 	c.RequireReturnCode(t, 1)
-	c.RequireFailMessage(t, "error occurs while config searching")
+	c.RequireFailMessage(t, "Error occurs while config searching")
 }
 
 func TestInvalidConfig(t *testing.T) {
@@ -30,7 +30,7 @@ func TestInvalidConfig(t *testing.T) {
 	c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 
 	c.RequireReturnCode(t, 1)
-	c.RequireFailMessage(t, "fail to parse config data")
+	c.RequireFailMessage(t, "Fail to parse config data")
 }
 
 func TestComplex(t *testing.T) {
