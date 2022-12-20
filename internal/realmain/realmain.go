@@ -95,20 +95,31 @@ func Main(l logger.Logger, cliArguments []string) int {
 		return 1
 	}
 
+	returnCode := 0
+
 	// Deploys links
 	linkMaker := links.NewLinkMaker(l)
 	l.Title("Create links")
-	linkMaker.CreateLinks(restructuredLinks)
+	success := linkMaker.CreateLinks(restructuredLinks)
+	if !success {
+		returnCode = 1
+	}
 
 	// Deploys templates
 	templateMaker := templates.NewTemplateMaker(l)
 	l.Title("Make templates")
-	templateMaker.MakeTemplates(restructuredTemplates)
+	success = templateMaker.MakeTemplates(restructuredTemplates)
+	if !success {
+		returnCode = 1
+	}
 
 	// Deploys commands
 	commandExecuter := commands.NewCommandExecuter(l)
 	l.Title("Execute commands")
-	commandExecuter.ExecuteCommands(restructuredCommands)
+	success = commandExecuter.ExecuteCommands(restructuredCommands)
+	if !success {
+		returnCode = 1
+	}
 
-	return 0
+	return returnCode
 }

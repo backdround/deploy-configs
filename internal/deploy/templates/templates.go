@@ -53,19 +53,19 @@ func (m templateMaker) logSkip(template Template) {
 	m.logger.Log(message)
 }
 
-func (m templateMaker) makeTemplate(t Template) {
+func (m templateMaker) makeTemplate(t Template) (success bool) {
 	// Gets expanded data
 	template, err := templatePackage.ParseFiles(t.InputPath)
 	if err != nil {
 		m.logFail(t, err.Error())
-		return
+		return false
 	}
 
 	outputBuffer := bytes.NewBuffer([]byte{})
 	err = template.Option("missingkey=error").Execute(outputBuffer, t.Data)
 	if err != nil {
 		m.logFail(t, err.Error())
-		return
+		return false
 	}
 
 	// Checks if the output file is already expanded
@@ -73,29 +73,32 @@ func (m templateMaker) makeTemplate(t Template) {
 	newOutputFileHash := fsutility.GetHash(outputBuffer.Bytes())
 	if bytes.Equal(oldOutputFileHash, newOutputFileHash) {
 		m.logSkip(t)
-		return
+		return true
 	}
 
 	// Creates tha output file directory
 	err = fsutility.MakeDirectoryIfDoesntExist(path.Dir(t.OutputPath))
 	if err != nil {
 		m.logFail(t, err.Error())
-		return
+		return false
 	}
 
 	// Creates the expanded file
 	err = os.WriteFile(t.OutputPath, outputBuffer.Bytes(), 0644)
 	if err != nil {
 		m.logFail(t, err.Error())
-		return
+		return false
 	}
 
 	m.logSuccess(t)
+	return true
 }
 
 // MakeTemplates expands the given templates.
-func (m templateMaker) MakeTemplates(templates []Template) {
+func (m templateMaker) MakeTemplates(templates []Template) (success bool) {
+	success = true
 	for _, template := range templates {
-		m.makeTemplate(template)
+		success = success && m.makeTemplate(template)
 	}
+	return success
 }

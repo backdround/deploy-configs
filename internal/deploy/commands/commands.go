@@ -56,12 +56,12 @@ func (e commandExecuter) logSkip(command Command) {
 
 // executeCommand expands command template, executes command,
 // checks that the OutputPath is created and logs all outcomes.
-func (e commandExecuter) executeCommand(c Command) {
+func (e commandExecuter) executeCommand(c Command) (success bool) {
 	// Checks that the input file exists
 	inputPathType := fsutility.GetPathType(c.InputPath)
 	if inputPathType == fsutility.Notexisting {
 		e.logFail(c, "input file doesn't exist")
-		return
+		return false
 	}
 
 	// Saves a hash of the old output file (if it exists)
@@ -75,7 +75,7 @@ func (e commandExecuter) executeCommand(c Command) {
 			message := fmt.Sprintf("unable to remove output file:\n%v",
 				err.Error())
 			e.logFail(c, message)
-			return
+			return false
 		}
 	}
 
@@ -84,7 +84,7 @@ func (e commandExecuter) executeCommand(c Command) {
 	err := fsutility.MakeDirectoryIfDoesntExist(outputDirectory)
 	if err != nil {
 		e.logFail(c, err.Error())
-		return
+		return false
 	}
 
 	// Gets command template
@@ -92,7 +92,7 @@ func (e commandExecuter) executeCommand(c Command) {
 	commandTemplate, err = commandTemplate.Parse(c.CommandTemplate)
 	if err != nil {
 		e.logFail(c, err.Error())
-		return
+		return false
 	}
 
 	// Gets expanded command
@@ -104,7 +104,7 @@ func (e commandExecuter) executeCommand(c Command) {
 	err = commandTemplate.Execute(expandedCommand, expandData)
 	if err != nil {
 		e.logFail(c, err.Error())
-		return
+		return false
 	}
 
 	// Executes the expanded command
@@ -113,7 +113,7 @@ func (e commandExecuter) executeCommand(c Command) {
 	if err != nil {
 		os.Remove(c.OutputPath)
 		e.logFail(c, err.Error())
-		return
+		return false
 	}
 
 	// Checks that the command created the output file
@@ -122,22 +122,25 @@ func (e commandExecuter) executeCommand(c Command) {
 		message := fmt.Sprintf("command didn't create file. output:\n%v",
 			string(cmdOutput))
 		e.logFail(c, message)
-		return
+		return false
 	}
 
 	// Checks that output file is changed
 	newOutputFileHash := fsutility.GetFileHash(c.OutputPath)
 	if bytes.Equal(oldOutputFileHash, newOutputFileHash) {
 		e.logSkip(c)
-		return
+		return true
 	}
 
 	e.logSuccess(c)
+	return true
 }
 
 // ExecuteCommands expands and executes given commands
-func (e commandExecuter) ExecuteCommands(commands []Command) {
+func (e commandExecuter) ExecuteCommands(commands []Command) (success bool) {
+	success = true
 	for _, command := range commands {
-		e.executeCommand(command)
+		success = success && e.executeCommand(command)
 	}
+	return success
 }

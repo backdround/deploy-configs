@@ -95,49 +95,57 @@ func (m linkMaker) logSkip(link Link) {
 	m.logger.Log(message)
 }
 
-func (m linkMaker) makeLink(link Link) {
-	createLink := func() {
+func (m linkMaker) makeLink(link Link) (success bool) {
+	createLink := func() (success bool) {
 		// Checks link directory
 		linkDirectory := path.Dir(link.LinkPath)
 		err := fsutility.MakeDirectoryIfDoesntExist(linkDirectory)
 		if err != nil {
 			m.logFail(link, err.Error())
+			return false
 		}
 
 		// Creates link
 		err = os.Symlink(link.TargetPath, link.LinkPath)
 		if err != nil {
 			m.logFail(link, err.Error())
-		} else {
-			m.logSuccess(link)
+			return false
 		}
+
+		m.logSuccess(link)
+		return true
 	}
 
 	action := linkDecisionMaker(link)
 
 	switch action {
 	case proceedNew:
-		createLink()
+		return createLink()
 	case proceedRemove:
 		err := os.Remove(link.LinkPath)
 		if err != nil {
 			m.logFail(link, err.Error())
-			break
+			return false
 		}
-		createLink()
+		return createLink()
 	case stopTargetDoesntExist:
 		m.logFail(link, "Target file isn't exist")
+		return false
 	case stopLinkFileExists:
 		m.logFail(link, "Link file already exists")
+		return false
 	case skip:
 		m.logSkip(link)
+		return true
+	default:
+		panic("unknown action")
 	}
 }
 
 // CreateLinks creates links which are described in links parameter.
 // If target is a directory it creates appropriate symlinks
 // for all files in that directory
-func (m linkMaker) CreateLinks(links []Link) {
+func (m linkMaker) CreateLinks(links []Link) (globalSuccess bool) {
 	isDirectory := func(path string) bool {
 		stat, err := os.Lstat(path)
 		if err != nil {
@@ -146,9 +154,11 @@ func (m linkMaker) CreateLinks(links []Link) {
 		return stat.IsDir()
 	}
 
+	globalSuccess = true
 	for _, link := range links {
 		if !isDirectory(link.TargetPath) {
-			m.makeLink(link)
+			success := m.makeLink(link)
+			globalSuccess = globalSuccess && success
 			continue
 		}
 
@@ -156,6 +166,7 @@ func (m linkMaker) CreateLinks(links []Link) {
 		fileInfos, err := ioutil.ReadDir(link.TargetPath)
 		if err != nil {
 			m.logFail(link, err.Error())
+			globalSuccess = false
 			continue
 		}
 
@@ -172,7 +183,10 @@ func (m linkMaker) CreateLinks(links []Link) {
 				TargetPath: specificTargetFile,
 				LinkPath:   specificLinkPath,
 			}
-			m.makeLink(specificLink)
+			success := m.makeLink(specificLink)
+			globalSuccess = globalSuccess && success
 		}
 	}
+
+	return globalSuccess
 }
