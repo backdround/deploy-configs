@@ -136,7 +136,7 @@ func TestLinks(t *testing.T) {
 			c.RequireFailMessage(t, expectedSuccessMessage)
 		})
 
-		t.Run("DestinationExists", func(t *testing.T) {
+		t.Run("LinkPathIsAFile", func(t *testing.T) {
 			fileTree := `
 				.git:
 				link.conf:
@@ -167,7 +167,7 @@ func TestLinks(t *testing.T) {
 			c.RequireFailMessage(t, expectedSuccessMessage)
 		})
 
-		t.Run("LinkPathExists", func(t *testing.T) {
+		t.Run("LinkPathIsUnreachable", func(t *testing.T) {
 			fileTree := `
 				.git:
 				link.conf:

@@ -221,7 +221,7 @@ func TestTemplates(t *testing.T) {
 			c.RequireFailMessage(t, expectedSpecificFailMessage)
 		})
 
-		t.Run("OutputPathExists", func(t *testing.T) {
+		t.Run("OutputPathIsUnreachable", func(t *testing.T) {
 			fileTree := `
 				.git:
 				config.temp:

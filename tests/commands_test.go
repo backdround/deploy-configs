@@ -179,7 +179,7 @@ func TestCommands(t *testing.T) {
 			c.RequireFailMessage(t, expectedFailMessage)
 		})
 
-		t.Run("OutputPathExists", func(t *testing.T) {
+		t.Run("OutputPathIsUnreachable", func(t *testing.T) {
 			fileTree := `
 				.git:
 				data.txt:
