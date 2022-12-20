@@ -26,11 +26,11 @@ func FindConfig(cwd string, names ...string) (configPath string, err error) {
 	return "", errors.New("unable to find config path")
 }
 
-func Main(l logger.Logger) int {
+func Main(l logger.Logger, cliArguments []string) int {
 	// Gets config instance
-	userInput := os.Args[1:]
+	userInput := cliArguments[1:]
 	if len(userInput) != 1 {
-		l.Fail("expect config instance as argument")
+		l.Fail("expected config instance as argument")
 		return 1
 	}
 	configInstance := userInput[0]
@@ -47,7 +47,7 @@ func Main(l logger.Logger) int {
 	configPath, err := FindConfig(cwd, "deploy-configs.yml",
 		"deploy-configs.yaml")
 	if err != nil {
-		l.Fail("error occurs while config searching")
+		l.Fail("error occurs while config searching:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -55,7 +55,7 @@ func Main(l logger.Logger) int {
 	// Reads config yaml
 	configData, err := os.ReadFile(configPath)
 	if err != nil {
-		l.Fail("unable to read config data")
+		l.Fail("unable to read config data:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -63,7 +63,7 @@ func Main(l logger.Logger) int {
 	// Parse config data
 	config, err := config.Get(configData, configInstance)
 	if err != nil {
-		l.Fail("fail to parse config data")
+		l.Fail("fail to parse config data:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -74,7 +74,7 @@ func Main(l logger.Logger) int {
 
 	restructuredLinks, err := dataConverter.RestructureLinks(config.Links)
 	if err != nil {
-		l.Fail("fail to convert config links to deploy links")
+		l.Fail("invalid config links:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -82,7 +82,7 @@ func Main(l logger.Logger) int {
 	restructuredTemplates, err := dataConverter.RestructureTemplates(
 		config.Templates)
 	if err != nil {
-		l.Fail("fail to convert config templates to deploy templates")
+		l.Fail("invalid config templates:")
 		l.Fail(err.Error())
 		return 1
 	}
@@ -90,7 +90,7 @@ func Main(l logger.Logger) int {
 	restructuredCommands, err := dataConverter.RestructureCommands(
 		config.Commands)
 	if err != nil {
-		l.Fail("fail to convert config commands to deploy commands")
+		l.Fail("invalid config commands:")
 		l.Fail(err.Error())
 		return 1
 	}

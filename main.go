@@ -9,6 +9,6 @@ import (
 
 func main() {
 	l := logger.New()
-	returnCode := realmain.Main(l)
+	returnCode := realmain.Main(l, os.Args)
 	os.Exit(returnCode)
 }
