@@ -12,52 +12,6 @@ import (
 	"github.com/backdround/go-indent"
 )
 
-////////////////////////////////////////////////////////////
-// linkAction
-
-// linkAction describes what to do with a hypothetical link
-type linkAction int
-
-const (
-	proceedNew linkAction = iota
-	proceedRemove
-	stopTargetDoesntExist
-	stopLinkFileExists
-	stopLinkPathExists
-	skip
-)
-
-// linkDecisionMaker chooses what to do with link,
-// based on the filesystem state
-func linkDecisionMaker(link Link) linkAction {
-	// Checks target path
-	if fsutility.GetPathType(link.TargetPath) == fsutility.Notexisting {
-		return stopTargetDoesntExist
-	}
-
-	// Checks link path
-	linkType := fsutility.GetPathType(link.LinkPath)
-	switch linkType {
-	case fsutility.Notexisting:
-		return proceedNew
-	case fsutility.Regular:
-		return stopLinkFileExists
-	case fsutility.Directory, fsutility.Unknown:
-		return stopLinkPathExists
-	case fsutility.Symlink:
-		if fsutility.IsLinkPointsToDestination(link.LinkPath, link.TargetPath) {
-			return skip
-		} else {
-			return proceedRemove
-		}
-	}
-
-	panic("unknown pathType")
-}
-
-////////////////////////////////////////////////////////////
-// linkMaker
-
 // linkMaker makes link and logs all outcomes.
 type linkMaker struct {
 	logger Logger
@@ -99,19 +53,50 @@ func (m linkMaker) logSkip(link Link) {
 }
 
 func (m linkMaker) makeLink(link Link) (success bool) {
-	createLink := func() (success bool) {
-		// Checks link directory
-		linkDirectory := path.Dir(link.LinkPath)
-		err := fsutility.MakeDirectoryIfDoesntExist(linkDirectory)
+	// Checks the target path
+	targetType := fsutility.GetPathType(link.TargetPath)
+	if targetType == fsutility.Notexisting {
+		m.logFail(link, "target path isn't exist")
+		return false
+	}
+
+	// Creates the link directory
+	linkDirectory := path.Dir(link.LinkPath)
+	err := fsutility.MakeDirectoryIfDoesntExist(linkDirectory)
+	if err != nil {
+		m.logFail(link, err.Error())
+		return false
+	}
+
+	linkType := fsutility.GetPathType(link.LinkPath)
+
+	// Checks that the link already points to target
+	if linkType == fsutility.Symlink {
+		skip := fsutility.IsLinkPointsToDestination(link.LinkPath,
+			link.TargetPath)
+		if skip {
+			m.logSkip(link)
+			return true
+		}
+	}
+
+	// Checks the link to replace
+	if linkType == fsutility.Symlink {
+		err := os.Remove(link.LinkPath)
 		if err != nil {
-			m.logFail(link, err.Error())
+			message := "unable to replace link:\n  " + err.Error()
+			m.logFail(link, message)
 			return false
 		}
+	}
 
-		// Creates link
+	// Creates the link
+	linkType = fsutility.GetPathType(link.LinkPath)
+	if linkType == fsutility.Notexisting {
 		err = os.Symlink(link.TargetPath, link.LinkPath)
 		if err != nil {
-			m.logFail(link, err.Error())
+			message := "unable to create link:\n  " + err.Error()
+			m.logFail(link, message)
 			return false
 		}
 
@@ -119,33 +104,8 @@ func (m linkMaker) makeLink(link Link) (success bool) {
 		return true
 	}
 
-	action := linkDecisionMaker(link)
-
-	switch action {
-	case proceedNew:
-		return createLink()
-	case proceedRemove:
-		err := os.Remove(link.LinkPath)
-		if err != nil {
-			m.logFail(link, err.Error())
-			return false
-		}
-		return createLink()
-	case stopTargetDoesntExist:
-		m.logFail(link, "Target file isn't exist")
-		return false
-	case stopLinkFileExists:
-		m.logFail(link, "Link file already exists")
-		return false
-	case stopLinkPathExists:
-		m.logFail(link, "Link path exists")
-		return false
-	case skip:
-		m.logSkip(link)
-		return true
-	default:
-		panic("unknown action")
-	}
+	m.logFail(link, "link path is occupied")
+	return false
 }
 
 // CreateLinks creates links which are described in links parameter.

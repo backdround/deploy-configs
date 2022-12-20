@@ -127,7 +127,7 @@ func TestLinks(t *testing.T) {
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
 					link: "{Root}/link1"
-						error: Target file isn't exist
+						error: target path isn't exist
 			`
 
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
@@ -158,7 +158,7 @@ func TestLinks(t *testing.T) {
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
 					link: "{Root}/link1"
-						error: Link file already exists
+						error: link path is occupied
 			`
 
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
@@ -167,12 +167,12 @@ func TestLinks(t *testing.T) {
 			c.RequireFailMessage(t, expectedSuccessMessage)
 		})
 
-		t.Run("DestinationPathExists", func(t *testing.T) {
+		t.Run("LinkPathExists", func(t *testing.T) {
 			fileTree := `
 				.git:
 				link.conf:
 					type: file
-				link-path:
+				sub:
 					type: file
 				deploy-configs.yaml:
 					type: file
@@ -182,13 +182,13 @@ func TestLinks(t *testing.T) {
 								links:
 									link1:
 										target: "{{.GitRoot}}/link.conf"
-										link: "{{.GitRoot}}/link-path/link1"
+										link: "{{.GitRoot}}/sub/link1"
 			`
 			expectedSuccessMessage := `
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
-					link: "{Root}/link-path/link1"
-						error: Link path exists
+					link: "{Root}/sub/link1"
+						error: unable to create directory
 			`
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
