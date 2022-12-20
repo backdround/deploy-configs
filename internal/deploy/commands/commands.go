@@ -72,8 +72,8 @@ func (e commandExecuter) executeCommand(c Command) (success bool) {
 	if outputPathType != fsutility.Notexisting {
 		err := os.Remove(c.OutputPath)
 		if err != nil {
-			message := fmt.Sprintf("unable to remove output file:\n%v",
-				err.Error())
+			message := fmt.Sprintf("unable to replace output file:\n%v",
+				shift(err.Error(), 1))
 			e.logFail(c, message)
 			return false
 		}
