@@ -197,3 +197,62 @@ func TestLinks(t *testing.T) {
 		})
 	})
 }
+
+func TestLinkDirectory(t *testing.T) {
+	initialFileTree := `
+		.git:
+		services:
+			service1:
+				type: file
+			service2:
+				type: file
+			service3:
+				type: file
+		deploy-configs.yaml:
+			type: file
+			data: |
+				instances:
+					pc1:
+						links:
+							services:
+								target: "{{.GitRoot}}/services"
+								link: "{{.GitRoot}}/deploy/services"
+	`
+	resultFileTree := initialFileTree + `
+		deploy:
+			services:
+				service1:
+					type: link
+					path: ../../services/service1
+				service2:
+					type: link
+					path: ../../services/service2
+				service3:
+					type: link
+					path: ../../services/service3
+	`
+
+	expectedService1Message := `
+		Link "services/service1" created:
+			target: "{Root}/services/service1"
+			link: "{Root}/deploy/services/service1"
+	`
+	expectedService2Message := `
+		Link "services/service2" created:
+			target: "{Root}/services/service2"
+			link: "{Root}/deploy/services/service2"
+	`
+	expectedService3Message := `
+		Link "services/service3" created:
+			target: "{Root}/services/service3"
+			link: "{Root}/deploy/services/service3"
+	`
+
+	c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
+	c.RequireReturnCode(t, 0)
+	c.RequireFileTree(t, resultFileTree)
+
+	c.RequireSuccessMessage(t, expectedService1Message)
+	c.RequireSuccessMessage(t, expectedService2Message)
+	c.RequireSuccessMessage(t, expectedService3Message)
+}
