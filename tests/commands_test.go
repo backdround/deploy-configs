@@ -204,13 +204,49 @@ func TestCommands(t *testing.T) {
 					input: "{Root}/data.txt"
 					output: "{Root}/sub/data-rev.txt"
 					command: "rev {{.Input}} > {{.Output}}"
-						error: unable to replace output file
+						error: unable to create directory
 			`
 
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
 			c.RequireFailMessage(t, expectedFailMessage)
+		})
+
+		t.Run("OutputPathIsADirectory", func(t *testing.T) {
+			fileTree := `
+				.git:
+				data.txt:
+					type: file
+					data: some data
+				data-rev:
+					sub:
+				deploy-configs.yaml:
+					type: file
+					data: |
+						instances:
+							pc1:
+								commands:
+									data-rev:
+										input: "{{.GitRoot}}/data.txt"
+										output: "{{.GitRoot}}/data-rev"
+										command: "rev {{.Input}} > {{.Output}}"
+			`
+
+			expectedGeneralFailMessage := `
+				Unable to execute "data-rev" command:
+					input: "{Root}/data.txt"
+					output: "{Root}/data-rev"
+					command: "rev {{.Input}} > {{.Output}}"
+						error: unable to replace output path
+			`
+			expectedSpecificFailMessage := "data-rev: directory not empty"
+
+			c := testcase.RunCase(t, fileTree, "./run", "pc1")
+			c.RequireReturnCode(t, 1)
+			c.RequireFileTree(t, fileTree)
+			c.RequireFailMessage(t, expectedGeneralFailMessage)
+			c.RequireFailMessage(t, expectedSpecificFailMessage)
 		})
 	})
 }

@@ -64,6 +64,14 @@ func (e commandExecuter) executeCommand(c Command) (success bool) {
 		return false
 	}
 
+	// Creates the output directory if it's needed
+	outputDirectory := path.Dir(c.OutputPath)
+	err := fsutility.MakeDirectoryIfDoesntExist(outputDirectory)
+	if err != nil {
+		e.logFail(c, err.Error())
+		return false
+	}
+
 	// Saves a hash of the old output file (if it exists)
 	oldOutputFileHash := fsutility.GetFileHash(c.OutputPath)
 
@@ -72,19 +80,11 @@ func (e commandExecuter) executeCommand(c Command) (success bool) {
 	if outputPathType != fsutility.Notexisting {
 		err := os.Remove(c.OutputPath)
 		if err != nil {
-			message := fmt.Sprintf("unable to replace output file:\n%v",
+			message := fmt.Sprintf("unable to replace output path:\n%v",
 				shift(err.Error(), 1))
 			e.logFail(c, message)
 			return false
 		}
-	}
-
-	// Creates the output directory if it's needed
-	outputDirectory := path.Dir(c.OutputPath)
-	err := fsutility.MakeDirectoryIfDoesntExist(outputDirectory)
-	if err != nil {
-		e.logFail(c, err.Error())
-		return false
 	}
 
 	// Gets command template
