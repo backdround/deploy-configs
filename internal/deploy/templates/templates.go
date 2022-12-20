@@ -83,7 +83,7 @@ func (m templateMaker) makeTemplate(t Template) (success bool) {
 		return true
 	}
 
-	// Creates tha output file directory
+	// Creates the output file directory
 	err = fsutility.MakeDirectoryIfDoesntExist(path.Dir(t.OutputPath))
 	if err != nil {
 		m.logFail(t, err.Error())

@@ -242,7 +242,7 @@ func TestTemplates(t *testing.T) {
 											var: 3
 			`
 
-			expectedGeneralFailMessage := `
+			expectedFailMessage := `
 				Unable to expand "config" template:
 					input: "{Root}/config.temp"
 					output: "{Root}/sub/config"
@@ -253,7 +253,42 @@ func TestTemplates(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
+			c.RequireFailMessage(t, expectedFailMessage)
+		})
+
+		t.Run("OutputPathIsADirectory", func(t *testing.T) {
+			fileTree := `
+				.git:
+				config.temp:
+					type: file
+					data: var = {{.var}}
+				config:
+				deploy-configs.yaml:
+					type: file
+					data: |
+						instances:
+							pc1:
+								templates:
+									config:
+										input: "{{.GitRoot}}/config.temp"
+										output: "{{.GitRoot}}/config"
+										data:
+											var: 3
+			`
+
+			expectedGeneralFailMessage := `
+				Unable to expand "config" template:
+					input: "{Root}/config.temp"
+					output: "{Root}/config"
+					data: map["var":'\x03']
+			`
+			expectedSpecificFailMessage := "is a directory"
+
+			c := testcase.RunCase(t, fileTree, "./run", "pc1")
+			c.RequireReturnCode(t, 1)
+			c.RequireFileTree(t, fileTree)
 			c.RequireFailMessage(t, expectedGeneralFailMessage)
+			c.RequireFailMessage(t, expectedSpecificFailMessage)
 		})
 	})
 }
