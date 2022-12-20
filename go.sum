@@ -1,5 +1,7 @@
 cuelang.org/go v0.4.3 h1:W3oBBjDTm7+IZfCKZAmC8uDG0eYfJL4Pp/xbbCMKaVo=
 cuelang.org/go v0.4.3/go.mod h1:7805vR9H+VoBNdWFdI7jyDR3QLUPp4+naHfbcgp55HI=
+github.com/backdround/go-fstree/v2 v2.0.0 h1:yceB8jgBq8Wcv4bCb8HCe8vjC7tpT5blmqHlPZQxGL4=
+github.com/backdround/go-fstree/v2 v2.0.0/go.mod h1:dV6K4HS8Y9oOjWjco1nHWLlxCfREFNmszJOwq9qSxuo=
 github.com/backdround/go-indent v1.0.0 h1:qplTnc+RxREnPfRyb08Ff1dBln89noQidfj6G2hlzCI=
 github.com/backdround/go-indent v1.0.0/go.mod h1:joFsq4VRHfD0SyJHa4t1tAcOEkbycHWUoOlhMWdxqq8=
 github.com/cockroachdb/apd v1.1.0 h1:3LFP3629v+1aKXU5Q37mxmRxX/pIu1nijXydLShEq5I=
