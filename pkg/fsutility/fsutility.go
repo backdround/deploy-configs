@@ -79,7 +79,7 @@ func MakeDirectoryIfDoesntExist(directory string) error {
 		if stat.IsDir() {
 			return nil
 		}
-		pattern := "Unable to create directory, because file exists: %q"
+		pattern := "unable to create directory, because file exists: %q"
 		return fmt.Errorf(pattern, directory)
 	}
 

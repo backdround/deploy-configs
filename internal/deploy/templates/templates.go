@@ -54,6 +54,13 @@ func (m templateMaker) logSkip(template Template) {
 }
 
 func (m templateMaker) makeTemplate(t Template) (success bool) {
+	// Checks input file existence
+	inputType := fsutility.GetPathType(t.InputPath)
+	if inputType != fsutility.Regular && inputType != fsutility.Symlink {
+		m.logFail(t, "input file doesn't exist")
+		return false
+	}
+
 	// Gets expanded data
 	template, err := templatePackage.ParseFiles(t.InputPath)
 	if err != nil {
