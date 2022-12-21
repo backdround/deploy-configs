@@ -150,25 +150,87 @@ func TestMakeDirectoryIfDoesntExist(t *testing.T) {
 }
 
 func TestIsLinkPointsToDestination(t *testing.T) {
-	t.Run("LinkPointsToDestination", func(t *testing.T) {
-		target := "/dev/null"
-		link := fstestutility.GetAvailableTempPath()
-		err := os.Symlink(target, link)
-		fstestutility.AssertNoError(err)
-		defer os.Remove(link)
+	t.Run("PathsAreAbsolute", func(t *testing.T) {
+		t.Run("LinkDoesntPointToDestination", func(t *testing.T) {
+			target := fstestutility.GetAvailableTempPath()
+			link := fstestutility.GetAvailableTempPath()
+			err := os.Symlink("/dev/null", link)
+			fstestutility.AssertNoError(err)
+			defer os.Remove(link)
 
-		// Asserts
-		require.True(t, IsLinkPointsToDestination(link, target))
+			// Asserts
+			require.False(t, IsLinkPointsToDestination(link, target))
+		})
+
+		t.Run("LinkPointsToDestination", func(t *testing.T) {
+			target := "/dev/null"
+			link := fstestutility.GetAvailableTempPath()
+			err := os.Symlink(target, link)
+			fstestutility.AssertNoError(err)
+			defer os.Remove(link)
+
+			// Asserts
+			require.True(t, IsLinkPointsToDestination(link, target))
+		})
 	})
 
-	t.Run("LinkDoesntPointToDestination", func(t *testing.T) {
-		target := fstestutility.GetAvailableTempPath()
-		link := fstestutility.GetAvailableTempPath()
-		err := os.Symlink("/dev/null", link)
-		fstestutility.AssertNoError(err)
-		defer os.Remove(link)
+	t.Run("PathsAreRelative", func(t *testing.T) {
+		t.Run("LinkPointsToDestination", func(t *testing.T) {
+			link := fstestutility.GetAvailableTempPath()
+			err := os.Symlink("../some/path", link)
+			fstestutility.AssertNoError(err)
+			defer os.Remove(link)
 
-		// Asserts
-		require.False(t, IsLinkPointsToDestination(link, target))
+			// Asserts
+			require.True(t, IsLinkPointsToDestination(link, "../some/path"))
+		})
+
+		t.Run("LinkDoesntPointToDestination", func(t *testing.T) {
+			link := fstestutility.GetAvailableTempPath()
+			err := os.Symlink("../some/path", link)
+			fstestutility.AssertNoError(err)
+			defer os.Remove(link)
+
+			// Asserts
+			require.False(t, IsLinkPointsToDestination(link, "../some"))
+		})
+	})
+
+	t.Run("PathsAreMixed", func(t *testing.T) {
+		t.Run("LinkPointsToDestination1", func(t *testing.T) {
+			linkPath := fstestutility.GetAvailableTempPath()
+			linkDirectory := path.Dir(linkPath)
+
+			// Gets target
+			targetRelative := "../some/path"
+			targetAbsolute := path.Join(linkDirectory, targetRelative)
+			targetAbsolute = path.Clean(targetAbsolute)
+
+			// Creates link
+			err := os.Symlink(targetRelative, linkPath)
+			fstestutility.AssertNoError(err)
+			defer os.Remove(linkPath)
+
+			// Asserts
+			require.True(t, IsLinkPointsToDestination(linkPath, targetAbsolute))
+		})
+
+		t.Run("LinkPointsToDestination2", func(t *testing.T) {
+			linkPath := fstestutility.GetAvailableTempPath()
+			linkDirectory := path.Dir(linkPath)
+
+			// Gets target
+			targetRelative := "../some/path"
+			targetAbsolute := path.Join(linkDirectory, targetRelative)
+			targetAbsolute = path.Clean(targetAbsolute)
+
+			// Creates link
+			err := os.Symlink(targetAbsolute, linkPath)
+			fstestutility.AssertNoError(err)
+			defer os.Remove(linkPath)
+
+			// Asserts
+			require.True(t, IsLinkPointsToDestination(linkPath, targetRelative))
+		})
 	})
 }

@@ -87,10 +87,36 @@ func MakeDirectoryIfDoesntExist(directory string) error {
 }
 
 func IsLinkPointsToDestination(linkPath string, destination string) bool {
+	// Makes linkPath absolute
+	if !path.IsAbs(linkPath) {
+		wd, err := os.Getwd()
+		if err != nil {
+			return false
+		}
+		linkPath = path.Join(wd, linkPath)
+	}
+
+	makeAbsolute := func(baseDirectory string, p string) string {
+		if path.IsAbs(p) {
+			return p
+		}
+		p = path.Join(baseDirectory, p)
+		p = path.Clean(p)
+
+		return p
+	}
+
+	// Gets absolute destination
+	linkDirectory := path.Dir(linkPath)
+	destination = makeAbsolute(linkDirectory, destination)
+
+
+	// Gets absolute link destination
 	linkDestination, err := os.Readlink(linkPath)
 	if err != nil {
 		return false
 	}
+	linkDestination = makeAbsolute(linkDirectory, linkDestination)
 
 	matched, err := path.Match(linkDestination, destination)
 
