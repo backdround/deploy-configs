@@ -110,35 +110,57 @@ func (m linkMaker) makeLink(link Link) (success bool) {
 
 // CreateLinks creates links which are described in links parameter.
 // If target is a directory it creates appropriate symlinks
-// for all files in that directory
+// for all entries in that directory
 func (m linkMaker) CreateLinks(links []Link) (globalSuccess bool) {
-	isDirectory := func(path string) bool {
-		stat, err := os.Lstat(path)
-		if err != nil {
-			return false
-		}
-		return stat.IsDir()
+	type makingAction = struct {
+		Name string
+		Perform func() (success bool)
 	}
 
-	globalSuccess = true
+	createErrorAction := func(link Link, err error) makingAction {
+		action := makingAction{
+			Name: link.Name,
+			Perform: func() bool {
+				m.logFail(link, err.Error())
+				return false
+			},
+		}
+		return action
+	}
+
+	createMakingAction := func(link Link) makingAction {
+		action := makingAction{
+			Name: link.Name,
+			Perform: func() bool {
+				return m.makeLink(link)
+			},
+		}
+		return action
+	}
+
+	// Creates slice of making actions
+	makingActions := []makingAction {}
+
 	for _, link := range links {
-		if !isDirectory(link.TargetPath) {
-			success := m.makeLink(link)
-			globalSuccess = globalSuccess && success
+		// Creates making action if target isn't a directory
+		targetType := fsutility.GetPathType(link.TargetPath)
+		if targetType != fsutility.Directory {
+			action := createMakingAction(link)
+			makingActions = append(makingActions, action)
 			continue
 		}
 
-		// Reads all files in directory
-		fileInfos, err := ioutil.ReadDir(link.TargetPath)
+		// Reads all entries in the target directory
+		entryInfos, err := ioutil.ReadDir(link.TargetPath)
 		if err != nil {
-			m.logFail(link, err.Error())
-			globalSuccess = false
+			action := createErrorAction(link, err)
+			makingActions = append(makingActions, action)
 			continue
 		}
 
-		// Makes link for every file in target directory.
-		for _, fileInfo := range fileInfos {
-			targetFileName := path.Base(fileInfo.Name())
+		// Makes an action for every entry in the target directory
+		for _, entryInfo := range entryInfos {
+			targetFileName := path.Base(entryInfo.Name())
 
 			specificName := link.Name + "/" + targetFileName
 			specificTargetFile := path.Join(link.TargetPath, targetFileName)
@@ -149,9 +171,16 @@ func (m linkMaker) CreateLinks(links []Link) (globalSuccess bool) {
 				TargetPath: specificTargetFile,
 				LinkPath:   specificLinkPath,
 			}
-			success := m.makeLink(specificLink)
-			globalSuccess = globalSuccess && success
+			specificAction := createMakingAction(specificLink)
+			makingActions = append(makingActions, specificAction)
 		}
+	}
+
+	// Makes all links
+	globalSuccess = true
+	for _, action := range makingActions {
+		success := action.Perform()
+		globalSuccess = globalSuccess && success
 	}
 
 	return globalSuccess
