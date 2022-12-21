@@ -23,20 +23,20 @@ func TestInvalidPathSubstitution(t *testing.T) {
 									link: "{{.GitRoot}}/link1"
 		`
 
-		expectedGeneralFailMessage := `Invalid config links:`
-		expectedSpecificFailMessage := `
+		expectedGeneralMessage := `Invalid config links:`
+		expectedSpecificMessage := `
 			unable to expand "link1" link:
 				{{.GitRut}}/link.conf
 					template: path-expander:
 		`
-		expectedSubSpecificFailMessage := `map has no entry for key "GitRut"`
+		expectedSubSpecificMessage := `map has no entry for key "GitRut"`
 
 		c := testcase.RunCase(t, fileTree, "./run", "pc1")
 		c.RequireReturnCode(t, 1)
 		c.RequireFileTree(t, fileTree)
-		c.RequireFailMessage(t, expectedGeneralFailMessage)
-		c.RequireFailMessage(t, expectedSpecificFailMessage)
-		c.RequireFailMessage(t, expectedSubSpecificFailMessage)
+		c.RequireFailMessage(t, expectedGeneralMessage)
+		c.RequireFailMessage(t, expectedSpecificMessage)
+		c.RequireFailMessage(t, expectedSubSpecificMessage)
 	})
 
 	t.Run("Template", func(t *testing.T) {
@@ -58,20 +58,20 @@ func TestInvalidPathSubstitution(t *testing.T) {
 										var: 3
 		`
 
-		expectedGeneralFailMessage := `Invalid config templates:`
-		expectedSpecificFailMessage := `
+		expectedGeneralMessage := `Invalid config templates:`
+		expectedSpecificMessage := `
 			unable to expand "template1" template:
 				{{.GitRut}}/template.conf
 					template: path-expander:
 		`
-		expectedSubSpecificFailMessage := `map has no entry for key "GitRut"`
+		expectedSubSpecificMessage := `map has no entry for key "GitRut"`
 
 		c := testcase.RunCase(t, fileTree, "./run", "pc1")
 		c.RequireReturnCode(t, 1)
 		c.RequireFileTree(t, fileTree)
-		c.RequireFailMessage(t, expectedGeneralFailMessage)
-		c.RequireFailMessage(t, expectedSpecificFailMessage)
-		c.RequireFailMessage(t, expectedSubSpecificFailMessage)
+		c.RequireFailMessage(t, expectedGeneralMessage)
+		c.RequireFailMessage(t, expectedSpecificMessage)
+		c.RequireFailMessage(t, expectedSubSpecificMessage)
 	})
 
 	t.Run("Command", func(t *testing.T) {
@@ -92,20 +92,20 @@ func TestInvalidPathSubstitution(t *testing.T) {
 									command: "cat {{.Input}} > {{.Output}}"
 		`
 
-		expectedGeneralFailMessage := `Invalid config commands:`
-		expectedSpecificFailMessage := `
+		expectedGeneralMessage := `Invalid config commands:`
+		expectedSpecificMessage := `
 			unable to expand "command1" command:
 				{{.GitRut}}/data.txt
 					template: path-expander:
 		`
-		expectedSubSpecificFailMessage := `map has no entry for key "GitRut"`
+		expectedSubSpecificMessage := `map has no entry for key "GitRut"`
 
 		c := testcase.RunCase(t, fileTree, "./run", "pc1")
 		c.RequireReturnCode(t, 1)
 		c.RequireFileTree(t, fileTree)
-		c.RequireFailMessage(t, expectedGeneralFailMessage)
-		c.RequireFailMessage(t, expectedSpecificFailMessage)
-		c.RequireFailMessage(t, expectedSubSpecificFailMessage)
+		c.RequireFailMessage(t, expectedGeneralMessage)
+		c.RequireFailMessage(t, expectedSpecificMessage)
+		c.RequireFailMessage(t, expectedSubSpecificMessage)
 	})
 
 	t.Run("CommandCommandField", func(t *testing.T) {
@@ -126,19 +126,19 @@ func TestInvalidPathSubstitution(t *testing.T) {
 									command: "cat {{.Inpuz}} > {{.Output}}"
 		`
 
-		expectedGeneralFailMessage := `
+		expectedGeneralMessage := `
 			Unable to execute "command1" command:
 				input: "{Root}/data.txt"
 				output: "{Root}/result-data.txt"
 				command: "cat {{.Inpuz}} > {{.Output}}"
 					error: template: command1:
 		`
-		expectedSpecificFailMessage := `map has no entry for key "Inpuz"`
+		expectedSpecificMessage := `map has no entry for key "Inpuz"`
 
 		c := testcase.RunCase(t, fileTree, "./run", "pc1")
 		c.RequireReturnCode(t, 1)
 		c.RequireFileTree(t, fileTree)
-		c.RequireFailMessage(t, expectedGeneralFailMessage)
-		c.RequireFailMessage(t, expectedSpecificFailMessage)
+		c.RequireFailMessage(t, expectedGeneralMessage)
+		c.RequireFailMessage(t, expectedSpecificMessage)
 	})
 }

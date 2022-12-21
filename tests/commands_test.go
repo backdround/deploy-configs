@@ -31,7 +31,7 @@ func TestCommands(t *testing.T) {
 					data: atad emos
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Command "data-rev" is executed:
 					input: "{Root}/data.txt"
 					output: "{Root}/data-rev.txt"
@@ -41,7 +41,7 @@ func TestCommands(t *testing.T) {
 			c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, resultFileTree)
-			c.RequireSuccessMessage(t, expectedSuccessMessage)
+			c.RequireSuccessMessage(t, expectedMessage)
 		})
 
 		t.Run("OutputExists", func(t *testing.T) {
@@ -76,7 +76,7 @@ func TestCommands(t *testing.T) {
 					type: file
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Command "data-rev" is executed:
 					input: "{Root}/data.txt"
 					output: "{Root}/data-rev.txt"
@@ -86,7 +86,7 @@ func TestCommands(t *testing.T) {
 			c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, resultFileTree)
-			c.RequireSuccessMessage(t, expectedSuccessMessage)
+			c.RequireSuccessMessage(t, expectedMessage)
 		})
 	})
 
@@ -133,7 +133,7 @@ func TestCommands(t *testing.T) {
 										command: "rev {{.Input}} > {{.Output}}"
 			`
 
-			expectedFailMessage := `
+			expectedMessage := `
 				Unable to execute "data-rev" command:
 					input: "{Root}/data.txt"
 					output: "{Root}/data-rev.txt"
@@ -144,7 +144,7 @@ func TestCommands(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedFailMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("ExecutionFail", func(t *testing.T) {
@@ -165,7 +165,7 @@ func TestCommands(t *testing.T) {
 										command: "./do {{.Input}} > {{.Output}}"
 			`
 
-			expectedFailMessage := `
+			expectedMessage := `
 				Unable to execute "do" command:
 					input: "{Root}/data.txt"
 					output: "{Root}/data-rev.txt"
@@ -176,7 +176,7 @@ func TestCommands(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedFailMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("OutputPathIsUnreachable", func(t *testing.T) {
@@ -199,7 +199,7 @@ func TestCommands(t *testing.T) {
 										command: "rev {{.Input}} > {{.Output}}"
 			`
 
-			expectedFailMessage := `
+			expectedMessage := `
 				Unable to execute "data-rev" command:
 					input: "{Root}/data.txt"
 					output: "{Root}/sub/data-rev.txt"
@@ -210,7 +210,7 @@ func TestCommands(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedFailMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("OutputPathIsADirectory", func(t *testing.T) {
@@ -233,20 +233,20 @@ func TestCommands(t *testing.T) {
 										command: "rev {{.Input}} > {{.Output}}"
 			`
 
-			expectedGeneralFailMessage := `
+			expectedGeneralMessage := `
 				Unable to execute "data-rev" command:
 					input: "{Root}/data.txt"
 					output: "{Root}/data-rev"
 					command: "rev {{.Input}} > {{.Output}}"
 						error: unable to replace output path
 			`
-			expectedSpecificFailMessage := "data-rev: directory not empty"
+			expectedSpecificMessage := "data-rev: directory not empty"
 
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedGeneralFailMessage)
-			c.RequireFailMessage(t, expectedSpecificFailMessage)
+			c.RequireFailMessage(t, expectedGeneralMessage)
+			c.RequireFailMessage(t, expectedSpecificMessage)
 		})
 	})
 }

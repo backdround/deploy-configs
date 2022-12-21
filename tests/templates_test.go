@@ -32,7 +32,7 @@ func TestTemplates(t *testing.T) {
 					data: var = 3
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Template "config" expanded:
 					input: "{Root}/config.temp"
 					output: "{Root}/config"
@@ -42,7 +42,7 @@ func TestTemplates(t *testing.T) {
 			c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, resultFileTree)
-			c.RequireSuccessMessage(t, expectedSuccessMessage)
+			c.RequireSuccessMessage(t, expectedMessage)
 		})
 
 		t.Run("OutputExists", func(t *testing.T) {
@@ -78,7 +78,7 @@ func TestTemplates(t *testing.T) {
 					type: file
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Template "config" expanded:
 					input: "{Root}/config.temp"
 					output: "{Root}/config"
@@ -88,7 +88,7 @@ func TestTemplates(t *testing.T) {
 			c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, resultFileTree)
-			c.RequireSuccessMessage(t, expectedSuccessMessage)
+			c.RequireSuccessMessage(t, expectedMessage)
 		})
 	})
 
@@ -137,7 +137,7 @@ func TestTemplates(t *testing.T) {
 											var: 3
 			`
 
-			expectedFailMessage := `
+			expectedMessage := `
 				Unable to expand "config" template:
 					input: "{Root}/config.temp"
 					output: "{Root}/config"
@@ -148,7 +148,7 @@ func TestTemplates(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedFailMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("InvalidTemplate", func(t *testing.T) {
@@ -170,7 +170,7 @@ func TestTemplates(t *testing.T) {
 											var: 3
 			`
 
-			expectedFailMessage := `
+			expectedMessage := `
 				Unable to expand "config" template:
 					input: "{Root}/config.temp"
 					output: "{Root}/config"
@@ -181,7 +181,7 @@ func TestTemplates(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedFailMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("MisspellingData", func(t *testing.T) {
@@ -203,22 +203,22 @@ func TestTemplates(t *testing.T) {
 											var: 3
 			`
 
-			expectedGeneralFailMessage := `
+			expectedGeneralMessage := `
 				Unable to expand "config" template:
 					input: "{Root}/config.temp"
 					output: "{Root}/config"
 					data: map["var":'\x03']
 						error: template: config.temp:1:
 			`
-			expectedSpecificFailMessage := `
+			expectedSpecificMessage := `
 				map has no entry for key "vvvar"
 			`
 
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedGeneralFailMessage)
-			c.RequireFailMessage(t, expectedSpecificFailMessage)
+			c.RequireFailMessage(t, expectedGeneralMessage)
+			c.RequireFailMessage(t, expectedSpecificMessage)
 		})
 
 		t.Run("OutputPathIsUnreachable", func(t *testing.T) {
@@ -242,7 +242,7 @@ func TestTemplates(t *testing.T) {
 											var: 3
 			`
 
-			expectedFailMessage := `
+			expectedMessage := `
 				Unable to expand "config" template:
 					input: "{Root}/config.temp"
 					output: "{Root}/sub/config"
@@ -253,7 +253,7 @@ func TestTemplates(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedFailMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("OutputPathIsADirectory", func(t *testing.T) {
@@ -276,19 +276,19 @@ func TestTemplates(t *testing.T) {
 											var: 3
 			`
 
-			expectedGeneralFailMessage := `
+			expectedGeneralMessage := `
 				Unable to expand "config" template:
 					input: "{Root}/config.temp"
 					output: "{Root}/config"
 					data: map["var":'\x03']
 			`
-			expectedSpecificFailMessage := "is a directory"
+			expectedSpecificMessage := "is a directory"
 
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedGeneralFailMessage)
-			c.RequireFailMessage(t, expectedSpecificFailMessage)
+			c.RequireFailMessage(t, expectedGeneralMessage)
+			c.RequireFailMessage(t, expectedSpecificMessage)
 		})
 	})
 }

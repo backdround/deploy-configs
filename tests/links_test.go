@@ -29,7 +29,7 @@ func TestLinks(t *testing.T) {
 					path: ./link.conf
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Link "link1" created:
 					target: "{Root}/link.conf"
 					link: "{Root}/link1"
@@ -38,7 +38,7 @@ func TestLinks(t *testing.T) {
 			c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, resultFileTree)
-			c.RequireSuccessMessage(t, expectedSuccessMessage)
+			c.RequireSuccessMessage(t, expectedMessage)
 		})
 
 		t.Run("LinkPointsToDifferentDestination", func(t *testing.T) {
@@ -70,7 +70,7 @@ func TestLinks(t *testing.T) {
 					type: file
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Link "link1" created:
 					target: "{Root}/link.conf"
 					link: "{Root}/link1"
@@ -79,7 +79,7 @@ func TestLinks(t *testing.T) {
 			c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, resultFileTree)
-			c.RequireSuccessMessage(t, expectedSuccessMessage)
+			c.RequireSuccessMessage(t, expectedMessage)
 		})
 	})
 
@@ -123,7 +123,7 @@ func TestLinks(t *testing.T) {
 										link: "{{.GitRoot}}/link1"
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
 					link: "{Root}/link1"
@@ -133,7 +133,7 @@ func TestLinks(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedSuccessMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("LinkPathIsAFile", func(t *testing.T) {
@@ -154,7 +154,7 @@ func TestLinks(t *testing.T) {
 										link: "{{.GitRoot}}/link1"
 			`
 
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
 					link: "{Root}/link1"
@@ -164,7 +164,7 @@ func TestLinks(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedSuccessMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 
 		t.Run("LinkPathIsUnreachable", func(t *testing.T) {
@@ -184,7 +184,7 @@ func TestLinks(t *testing.T) {
 										target: "{{.GitRoot}}/link.conf"
 										link: "{{.GitRoot}}/sub/link1"
 			`
-			expectedSuccessMessage := `
+			expectedMessage := `
 				Unable to create "link1" link:
 					target: "{Root}/link.conf"
 					link: "{Root}/sub/link1"
@@ -193,7 +193,7 @@ func TestLinks(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 1)
 			c.RequireFileTree(t, fileTree)
-			c.RequireFailMessage(t, expectedSuccessMessage)
+			c.RequireFailMessage(t, expectedMessage)
 		})
 	})
 }

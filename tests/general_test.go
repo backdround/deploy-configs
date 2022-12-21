@@ -149,7 +149,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 										target: "{{.GitRoot}}/sources/link1"
 										link: "{{.GitRoot}}/deploy/link1"
 			`
-			expectedSkipMessages := []string{
+			expectedMessages := []string{
 				`Link "link1" is skipped`,
 				`Link "link2" is skipped`,
 				`Link "link3" is skipped`,
@@ -157,7 +157,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, fileTree)
-			c.RequireLogMessages(t, expectedSkipMessages, 2)
+			c.RequireLogMessages(t, expectedMessages, 2)
 	})
 
 	t.Run("linkDirectory", func(t *testing.T) {
@@ -190,7 +190,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 										target: "{{.GitRoot}}/sources"
 										link: "{{.GitRoot}}/deploy"
 			`
-			expectedSkipMessages := []string{
+			expectedMessages := []string{
 				`Link "sources/link1" is skipped`,
 				`Link "sources/link2" is skipped`,
 				`Link "sources/link3" is skipped`,
@@ -198,7 +198,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, fileTree)
-			c.RequireLogMessages(t, expectedSkipMessages, 2)
+			c.RequireLogMessages(t, expectedMessages, 2)
 	})
 
 	t.Run("Commands", func(t *testing.T) {
@@ -235,7 +235,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 										output: "{{.GitRoot}}/rev3.txt"
 										command: "rev {{.Input}} > {{.Output}}"
 			`
-			expectedSkipMessages := []string{
+			expectedMessages := []string{
 				`Command "reverse1" is skipped`,
 				`Command "reverse2" is skipped`,
 				`Command "reverse3" is skipped`,
@@ -243,7 +243,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, fileTree)
-			c.RequireLogMessages(t, expectedSkipMessages, 2)
+			c.RequireLogMessages(t, expectedMessages, 2)
 	})
 
 	t.Run("Templates", func(t *testing.T) {
@@ -283,7 +283,7 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 										data:
 											var: 2
 			`
-			expectedSkipMessages := []string{
+			expectedMessages := []string{
 				`Template "template1" is skipped`,
 				`Template "template2" is skipped`,
 				`Template "template3" is skipped`,
@@ -291,6 +291,6 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
 			c.RequireFileTree(t, fileTree)
-			c.RequireLogMessages(t, expectedSkipMessages, 2)
+			c.RequireLogMessages(t, expectedMessages, 2)
 	})
 }
