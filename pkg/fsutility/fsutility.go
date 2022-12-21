@@ -110,7 +110,6 @@ func IsLinkPointsToDestination(linkPath string, destination string) bool {
 	linkDirectory := path.Dir(linkPath)
 	destination = makeAbsolute(linkDirectory, destination)
 
-
 	// Gets absolute link destination
 	linkDestination, err := os.Readlink(linkPath)
 	if err != nil {

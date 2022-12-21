@@ -113,7 +113,7 @@ func (m linkMaker) makeLink(link Link) (success bool) {
 // for all entries in that directory
 func (m linkMaker) CreateLinks(links []Link) (globalSuccess bool) {
 	type makingAction = struct {
-		Name string
+		Name    string
 		Perform func() (success bool)
 	}
 
@@ -139,7 +139,7 @@ func (m linkMaker) CreateLinks(links []Link) (globalSuccess bool) {
 	}
 
 	// Creates slice of making actions
-	makingActions := []makingAction {}
+	makingActions := []makingAction{}
 
 	for _, link := range links {
 		// Creates making action if target isn't a directory
