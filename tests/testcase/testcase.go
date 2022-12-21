@@ -67,6 +67,12 @@ func (c *TestCase) RequireLogMessage(t *testing.T, message string) {
 	c.fakeLogger.RequireLogContains(t, message)
 }
 
+func (c *TestCase) RequireLogMessages(t *testing.T, messages []string,
+	skipCount int) {
+	t.Helper()
+	c.fakeLogger.RequireLogEqual(t, messages, skipCount)
+}
+
 ////////////////////////////////////////////////////////////
 // Private fucntions
 

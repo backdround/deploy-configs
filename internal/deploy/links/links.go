@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"sort"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
 	"github.com/backdround/go-indent"
@@ -175,6 +176,11 @@ func (m linkMaker) CreateLinks(links []Link) (globalSuccess bool) {
 			makingActions = append(makingActions, specificAction)
 		}
 	}
+
+	// Sorts actions by name
+	sort.Slice(makingActions, func(i int, j int) bool {
+		return makingActions[i].Name < makingActions[j].Name
+	})
 
 	// Makes all links
 	globalSuccess = true

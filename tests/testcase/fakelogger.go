@@ -76,3 +76,9 @@ func (l *FakeLogger) RequireLogContains(t *testing.T, message string) {
 	t.Helper()
 	l.requireContains(t, l.logs, message)
 }
+
+func (l *FakeLogger) RequireLogEqual(t *testing.T, messages []string,
+	skipCount int) {
+	t.Helper()
+	require.Equal(t, messages, l.logs[skipCount:])
+}

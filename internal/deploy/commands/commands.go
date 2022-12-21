@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"sort"
 	"text/template"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
@@ -138,6 +139,12 @@ func (e commandExecuter) executeCommand(c Command) (success bool) {
 
 // ExecuteCommands expands and executes given commands
 func (e commandExecuter) ExecuteCommands(commands []Command) (success bool) {
+	// Sorts commands by name
+	sort.Slice(commands, func(i int, j int) bool {
+		return commands[i].Name < commands[j].Name
+	})
+
+	// Executes commands
 	success = true
 	for _, command := range commands {
 		success = success && e.executeCommand(command)

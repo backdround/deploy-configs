@@ -111,3 +111,186 @@ func TestComplex(t *testing.T) {
 	c.RequireSuccessMessage(t, expectedTemplateMessage)
 	c.RequireSuccessMessage(t, expectedCommandMessage)
 }
+
+func TestAlphabeticalExecutionSequence(t *testing.T) {
+	t.Run("links", func(t *testing.T) {
+			fileTree := `
+				.git:
+				sources:
+					link1:
+						type: file
+					link2:
+						type: file
+					link3:
+						type: file
+				deploy:
+					link1:
+						type: link
+						path: ../sources/link1
+					link2:
+						type: link
+						path: ../sources/link2
+					link3:
+						type: link
+						path: ../sources/link3
+				deploy-configs.yaml:
+					type: file
+					data: |
+						instances:
+							pc1:
+								links:
+									link3:
+										target: "{{.GitRoot}}/sources/link3"
+										link: "{{.GitRoot}}/deploy/link3"
+									link2:
+										target: "{{.GitRoot}}/sources/link2"
+										link: "{{.GitRoot}}/deploy/link2"
+									link1:
+										target: "{{.GitRoot}}/sources/link1"
+										link: "{{.GitRoot}}/deploy/link1"
+			`
+			expectedSkipMessages := []string{
+				`Link "link1" skipped`,
+				`Link "link2" skipped`,
+				`Link "link3" skipped`,
+			}
+			c := testcase.RunCase(t, fileTree, "./run", "pc1")
+			c.RequireReturnCode(t, 0)
+			c.RequireFileTree(t, fileTree)
+			c.RequireLogMessages(t, expectedSkipMessages, 2)
+	})
+
+	t.Run("linkDirectory", func(t *testing.T) {
+			fileTree := `
+				.git:
+				sources:
+					link1:
+						type: file
+					link2:
+						type: file
+					link3:
+						type: file
+				deploy:
+					link1:
+						type: link
+						path: ../sources/link1
+					link2:
+						type: link
+						path: ../sources/link2
+					link3:
+						type: link
+						path: ../sources/link3
+				deploy-configs.yaml:
+					type: file
+					data: |
+						instances:
+							pc1:
+								links:
+									sources:
+										target: "{{.GitRoot}}/sources"
+										link: "{{.GitRoot}}/deploy"
+			`
+			expectedSkipMessages := []string{
+				`Link "sources/link1" skipped`,
+				`Link "sources/link2" skipped`,
+				`Link "sources/link3" skipped`,
+			}
+			c := testcase.RunCase(t, fileTree, "./run", "pc1")
+			c.RequireReturnCode(t, 0)
+			c.RequireFileTree(t, fileTree)
+			c.RequireLogMessages(t, expectedSkipMessages, 2)
+	})
+
+	t.Run("Commands", func(t *testing.T) {
+			fileTree := `
+				.git:
+				data.txt:
+					type: file
+					data: some data
+				rev1.txt:
+					type: file
+					data: atad emos
+				rev2.txt:
+					type: file
+					data: atad emos
+				rev3.txt:
+					type: file
+					data: atad emos
+				deploy-configs.yaml:
+					type: file
+					data: |
+						instances:
+							pc1:
+								commands:
+									reverse2:
+										input: "{{.GitRoot}}/data.txt"
+										output: "{{.GitRoot}}/rev2.txt"
+										command: "rev {{.Input}} > {{.Output}}"
+									reverse1:
+										input: "{{.GitRoot}}/data.txt"
+										output: "{{.GitRoot}}/rev1.txt"
+										command: "rev {{.Input}} > {{.Output}}"
+									reverse3:
+										input: "{{.GitRoot}}/data.txt"
+										output: "{{.GitRoot}}/rev3.txt"
+										command: "rev {{.Input}} > {{.Output}}"
+			`
+			expectedSkipMessages := []string{
+				`Command "reverse1" is skipped`,
+				`Command "reverse2" is skipped`,
+				`Command "reverse3" is skipped`,
+			}
+			c := testcase.RunCase(t, fileTree, "./run", "pc1")
+			c.RequireReturnCode(t, 0)
+			c.RequireFileTree(t, fileTree)
+			c.RequireLogMessages(t, expectedSkipMessages, 2)
+	})
+
+	t.Run("Templates", func(t *testing.T) {
+			fileTree := `
+				.git:
+				template.txt:
+					type: file
+					data: var = {{.var}}
+				result1.txt:
+					type: file
+					data: var = 1
+				result2.txt:
+					type: file
+					data: var = 2
+				result3.txt:
+					type: file
+					data: var = 3
+				deploy-configs.yaml:
+					type: file
+					data: |
+						instances:
+							pc1:
+								templates:
+									template3:
+										input: "{{.GitRoot}}/template.txt"
+										output: "{{.GitRoot}}/result3.txt"
+										data:
+											var: 3
+									template1:
+										input: "{{.GitRoot}}/template.txt"
+										output: "{{.GitRoot}}/result1.txt"
+										data:
+											var: 1
+									template2:
+										input: "{{.GitRoot}}/template.txt"
+										output: "{{.GitRoot}}/result2.txt"
+										data:
+											var: 2
+			`
+			expectedSkipMessages := []string{
+				`Template "template1" skipped`,
+				`Template "template2" skipped`,
+				`Template "template3" skipped`,
+			}
+			c := testcase.RunCase(t, fileTree, "./run", "pc1")
+			c.RequireReturnCode(t, 0)
+			c.RequireFileTree(t, fileTree)
+			c.RequireLogMessages(t, expectedSkipMessages, 2)
+	})
+}

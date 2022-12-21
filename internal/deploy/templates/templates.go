@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sort"
 	templatePackage "text/template"
 
 	"github.com/backdround/deploy-configs/pkg/fsutility"
@@ -103,6 +104,11 @@ func (m templateMaker) makeTemplate(t Template) (success bool) {
 
 // MakeTemplates expands the given templates.
 func (m templateMaker) MakeTemplates(templates []Template) (success bool) {
+	// Sorts commands by name
+	sort.Slice(templates, func(i int, j int) bool {
+		return templates[i].Name < templates[j].Name
+	})
+
 	success = true
 	for _, template := range templates {
 		success = success && m.makeTemplate(template)
