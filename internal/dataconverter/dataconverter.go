@@ -10,6 +10,7 @@ import (
 	"github.com/backdround/deploy-configs/internal/deploy/links"
 	"github.com/backdround/deploy-configs/internal/deploy/templates"
 	"github.com/backdround/deploy-configs/internal/pathexpander"
+	"github.com/backdround/go-indent"
 )
 
 type Logger interface {
@@ -34,8 +35,10 @@ func (c dataConverter) pathExpand(unitName string, unitDescription string,
 	templateToExpand string) (expandedTemplate string, err error) {
 	expandedTemplate, err = c.pathExpander.Expand(templateToExpand)
 	if err != nil {
-		err = fmt.Errorf("unable to expand %v %q:\n%v\n\t%v",
-			unitDescription, unitName, templateToExpand, err.Error())
+		templateToExpand = indent.Indent(templateToExpand, "  ", 1)
+		errorMessage := indent.Indent(err.Error(), "  ", 2)
+		err = fmt.Errorf("unable to expand %q %v:\n%v\n%v",
+			unitName, unitDescription, templateToExpand, errorMessage)
 	}
 	return expandedTemplate, err
 }
