@@ -105,7 +105,7 @@ func TestLinks(t *testing.T) {
 		c := testcase.RunCase(t, fileTree, "./run", "pc1")
 		c.RequireReturnCode(t, 0)
 		c.RequireFileTree(t, fileTree)
-		c.RequireLogMessage(t, `Link "link1" skipped`)
+		c.RequireLogMessage(t, `Link "link1" is skipped`)
 	})
 
 	t.Run("Fail", func(t *testing.T) {

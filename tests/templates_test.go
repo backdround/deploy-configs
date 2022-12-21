@@ -117,7 +117,7 @@ func TestTemplates(t *testing.T) {
 		c := testcase.RunCase(t, fileTree, "./run", "pc1")
 		c.RequireReturnCode(t, 0)
 		c.RequireFileTree(t, fileTree)
-		c.RequireLogMessage(t, `Template "config" skipped`)
+		c.RequireLogMessage(t, `Template "config" is skipped`)
 	})
 
 	t.Run("Fail", func(t *testing.T) {

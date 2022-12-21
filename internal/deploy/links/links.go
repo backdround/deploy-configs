@@ -49,7 +49,7 @@ func (m linkMaker) logSuccess(link Link) {
 }
 
 func (m linkMaker) logSkip(link Link) {
-	message := fmt.Sprintf("Link %q skipped", link.Name)
+	message := fmt.Sprintf("Link %q is skipped", link.Name)
 	m.logger.Log(message)
 }
 

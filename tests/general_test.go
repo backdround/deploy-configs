@@ -150,9 +150,9 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 										link: "{{.GitRoot}}/deploy/link1"
 			`
 			expectedSkipMessages := []string{
-				`Link "link1" skipped`,
-				`Link "link2" skipped`,
-				`Link "link3" skipped`,
+				`Link "link1" is skipped`,
+				`Link "link2" is skipped`,
+				`Link "link3" is skipped`,
 			}
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
@@ -191,9 +191,9 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 										link: "{{.GitRoot}}/deploy"
 			`
 			expectedSkipMessages := []string{
-				`Link "sources/link1" skipped`,
-				`Link "sources/link2" skipped`,
-				`Link "sources/link3" skipped`,
+				`Link "sources/link1" is skipped`,
+				`Link "sources/link2" is skipped`,
+				`Link "sources/link3" is skipped`,
 			}
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)
@@ -284,9 +284,9 @@ func TestAlphabeticalExecutionSequence(t *testing.T) {
 											var: 2
 			`
 			expectedSkipMessages := []string{
-				`Template "template1" skipped`,
-				`Template "template2" skipped`,
-				`Template "template3" skipped`,
+				`Template "template1" is skipped`,
+				`Template "template2" is skipped`,
+				`Template "template3" is skipped`,
 			}
 			c := testcase.RunCase(t, fileTree, "./run", "pc1")
 			c.RequireReturnCode(t, 0)

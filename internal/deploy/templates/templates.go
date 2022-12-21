@@ -50,7 +50,7 @@ func (m templateMaker) logSuccess(template Template) {
 }
 
 func (m templateMaker) logSkip(template Template) {
-	message := fmt.Sprintf("Template %q skipped", template.Name)
+	message := fmt.Sprintf("Template %q is skipped", template.Name)
 	m.logger.Log(message)
 }
 
