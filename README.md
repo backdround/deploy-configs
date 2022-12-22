@@ -5,12 +5,12 @@
 [![Codecov](https://img.shields.io/codecov/c/github/backdround/deploy-configs?style=flat-square)](https://app.codecov.io/gh/backdround/deploy-configs/)
 [![Go Report](https://goreportcard.com/badge/github.com/backdround/deploy-configs?style=flat-square)](https://goreportcard.com/report/github.com/backdround/deploy-configs)
 
-It serves to deploy config files to your pc instance by `yaml` description.
+It serves to deploy config files to pc by `yaml` description.
 
 It can:
-- crate symlinks
+- create symlinks
 - expand templates
-- execute commnad
+- execute commands
 
 It shows execution log gracefully:
 - what was changed
