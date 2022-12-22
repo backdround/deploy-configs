@@ -24,8 +24,50 @@ It shows execution log gracefully:
 ---
 ## Example
 
-Lets create sample dot repository to deploy:
+Lets create sample config repository to deploy:
 ```bash
+./configs
+├── .git
+├── deploy-configs.yaml
+└── terminal
+    ├── tmux
+    └── gitconfig
+```
+
+`deploy-configs.yaml` contains yaml that drives deploying process:
+```yaml
+instances:
+  home:
+    links:
+      tmux:
+        target: "{{.GitRoot}}/terminal/tmux"
+        link: "{{.Home}}/.tmux.conf"
+      git:
+        target: "{{.GitRoot}}/terminal/gitconfig"
+        link: "{{.Home}}/.gitconfig"
+```
+
+To deploy `home` instance we execute application:
+
+```bash
+deploy-configs home
+```
+
+Result user home tree with deployed configs:
+```bash
+/home/user/
+├── .gitconfig -> /home/user/configs/terminal/gitconfig
+├── .tmux.conf -> /home/user/configs/terminal/tmux
+└── configs
+    └── ... # output truncated
+```
+
+## Complex example
+<details><br>
+
+
+```bash
+# Config repository to deploy
 ./configs
 ├── .git
 ├── deploy-configs.yaml
@@ -38,8 +80,8 @@ Lets create sample dot repository to deploy:
     └── tmux
 ```
 
-`deploy-configs.yaml` contains yaml that drives deploying process:
 ```yaml
+# deploy-configs.yaml
 instances:
   home:
 
@@ -70,27 +112,26 @@ instances:
             right: "HDMI-3"
 ```
 
-To deploy home instance we execute application:
-
 ```bash
+# Deploying `home` instance
 deploy-configs home
 ```
 
-Result tree with deployed configs:
 ```bash
+# Result home tree with deployed configs
 /home/user/
 ├── .config
 │   ├── flameshot
 │   │   └── flameshot.ini
 │   └── i3
 │       └── config
-├── configs
 ├── .gitconfig -> /home/user/configs/git/gitconfig
 ├── .tmux.conf -> /home/user/configs/terminal/tmux
 └── configs
     └── ... # output truncated
 ```
 
+</details>
 
 
 
