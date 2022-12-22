@@ -1,9 +1,9 @@
+# Deploy-configs
+
 [![Go Reference](https://img.shields.io/badge/go-reference-%2300ADD8?style=flat-square)](https://pkg.go.dev/github.com/backdround/deploy-configs)
 [![Tests](https://img.shields.io/github/actions/workflow/status/backdround/deploy-configs/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/backdround/deploy-configs/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/backdround/deploy-configs?style=flat-square)](https://app.codecov.io/gh/backdround/deploy-configs/)
 [![Go Report](https://goreportcard.com/badge/github.com/backdround/deploy-configs?style=flat-square)](https://goreportcard.com/report/github.com/backdround/deploy-configs)
-
-# Deploy-configs
 
 It serves to deploy config files to your pc instance by `yaml` description.
 
@@ -17,7 +17,12 @@ It shows execution log gracefully:
 - what wasn't changed
 - what wasn't able to succeed
 
-### Example
+
+
+
+
+---
+## Example
 
 Lets create sample dot repository to deploy:
 ```bash
@@ -86,9 +91,17 @@ Result tree with deployed configs:
     └── ... # output truncated
 ```
 
-### Deploy yaml format
 
-#### Main `deploy-configs.yaml` structure
+
+
+---
+## Yaml format
+
+Application deploys config files in accordance with `deploy-configs.yaml`. It
+searches file recursively from current directory to root.
+
+<details>
+<summary> Main structure </summary><br>
 
 Schematic example:
 ```yaml
@@ -98,7 +111,7 @@ Schematic example:
     - shared
     - data
 
-# Instances contains a dictionary with all possible instances.
+# Field contains a dictionary with all possible instances.
 instances:
   # Instance is a set of deploying operation for performing at once.
   <instance-one>:
@@ -124,23 +137,23 @@ Real example:
     link: "{{.Home}}/.zshrc"
 
 instances:
-
   home:
     links:
       <<: *dev-links
-
   work:
     links:
       <<: *dev-links
     templates:
       ...
-
-  laptop:
-    commands:
-      ...
 ```
 
-#### Links field
+</details>
+
+---
+
+<details>
+<summary> Links </summary><br>
+
 Links field describes links that are needed to be created.
 
 Ripped out example:
@@ -157,7 +170,13 @@ links:
     link: "{{.Home}}/.zshrc"
 ```
 
-#### Templates field
+</details>
+
+---
+
+<details>
+<summary> Templates </summary><br>
+
 Templates field describes templates that are needed to be expanded and deployed.
 
 Ripped out example:
@@ -179,7 +198,13 @@ templates:
         right: "HDMI-3"
 ```
 
-#### Commands field
+</details>
+
+---
+
+<details>
+<summary> Commands </summary><br>
+
 Commands field describes commands that create `output` files after execution.
 
 Ripped out example:
@@ -196,7 +221,14 @@ commands:
     command: "sed \"s~%HOMEDIR%~$HOME~g\" '{{.Input}}' > '{{.Output}}'"
 ```
 
-#### Path replacement
+</details>
+
+
+
+
+
+---
+## Path replacement
 There are some replacements to define paths:
 - {{.GitRoot}} - expands into current git directory.
 - {{.Home}} - expands into current user home directory.
