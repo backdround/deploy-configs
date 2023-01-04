@@ -19,6 +19,14 @@ It shows execution log gracefully:
 
 
 
+---
+## Installation
+
+By `go` compiler tools:
+```bash
+go install github.com/backdround/deploy-configs@main
+```
+
 
 
 ---
