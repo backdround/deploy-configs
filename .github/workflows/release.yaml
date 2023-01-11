@@ -1,0 +1,20 @@
+name: release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  commit-release:
+    runs-on: ubuntu-latest
+    container: golang
+    steps:
+      - name: Checkout all commits with tags
+        run: git clone "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" ./
+
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          args: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
