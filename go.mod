@@ -4,17 +4,17 @@ go 1.19
 
 require (
 	cuelang.org/go v0.4.3
+	github.com/backdround/go-fstree/v2 v2.0.0
+	github.com/backdround/go-indent v1.0.0
+	github.com/fatih/color v1.13.0
 	github.com/lithammer/dedent v1.1.0
 	github.com/stretchr/testify v1.8.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	github.com/backdround/go-fstree/v2 v2.0.0 // indirect
-	github.com/backdround/go-indent v1.0.0 // indirect
 	github.com/cockroachdb/apd/v2 v2.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fatih/color v1.13.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
