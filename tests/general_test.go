@@ -112,6 +112,154 @@ func TestComplex(t *testing.T) {
 	c.RequireSuccessMessage(t, expectedCommandMessage)
 }
 
+func TestReplaceExistingOutputLink(t *testing.T) {
+	t.Run("Links", func(t *testing.T) {
+		initialFileTree := `
+			.git:
+			sources:
+				file1:
+					type: file
+			deploy:
+				link1:
+					type: link
+					path: ../file.txt
+			deploy-configs.yaml:
+				type: file
+				data: |
+					instances:
+						pc1:
+							links:
+								link1:
+									target: "{{.GitRoot}}/sources/file1"
+									link: "{{.GitRoot}}/deploy/link1"
+		`
+
+		expectedFileTree := `
+			.git:
+			sources:
+				file1:
+					type: file
+			deploy:
+				link1:
+					type: link
+					path: ../sources/file1
+			deploy-configs.yaml:
+				type: file
+		`
+
+		expectedLinkMessage := `
+			Link "link1" created:
+				target: "{Root}/sources/file1"
+				link: "{Root}/deploy/link1"
+		`
+
+		c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
+		c.RequireReturnCode(t, 0)
+		c.RequireFileTree(t, expectedFileTree)
+		c.RequireSuccessMessage(t, expectedLinkMessage)
+	})
+
+	t.Run("Commands", func(t *testing.T) {
+		initialFileTree := `
+			.git:
+			sources:
+				file1:
+					type: file
+					data: "some data"
+			deploy:
+				command1:
+					type: link
+					path: ../file.txt
+			deploy-configs.yaml:
+				type: file
+				data: |
+					instances:
+						pc1:
+							commands:
+								command1:
+									input: "{{.GitRoot}}/sources/file1"
+									output: "{{.GitRoot}}/deploy/command1"
+									command: "cat {{.Input}} > {{.Output}}"
+		`
+
+		expectedFileTree := `
+			.git:
+			sources:
+				file1:
+					type: file
+					data: "some data"
+			deploy:
+				command1:
+					type: file
+					data: "some data"
+			deploy-configs.yaml:
+				type: file
+		`
+
+		expectedCommandMessage := `
+			Command "command1" is executed:
+				input: "{Root}/sources/file1"
+				output: "{Root}/deploy/command1"
+				command: "cat {{.Input}} > {{.Output}}"
+		`
+
+		c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
+		c.RequireReturnCode(t, 0)
+		c.RequireFileTree(t, expectedFileTree)
+		c.RequireSuccessMessage(t, expectedCommandMessage)
+	})
+
+	t.Run("Templates", func(t *testing.T) {
+		initialFileTree := `
+			.git:
+			sources:
+				file1:
+					type: file
+					data: "var = {{ .var }}"
+			deploy:
+				template1:
+					type: link
+					path: ../file.txt
+			deploy-configs.yaml:
+				type: file
+				data: |
+					instances:
+						pc1:
+							templates:
+								template1:
+									input: "{{.GitRoot}}/sources/file1"
+									output: "{{.GitRoot}}/deploy/template1"
+									data:
+										var: 3
+		`
+
+		expectedFileTree := `
+			.git:
+			sources:
+				file1:
+					type: file
+					data: "var = {{ .var }}"
+			deploy:
+				template1:
+					type: file
+					data: "var = 3"
+			deploy-configs.yaml:
+				type: file
+		`
+
+		expectedTemplateMessage := `
+			Template "template1" expanded:
+				input: "{Root}/sources/file1"
+				output: "{Root}/deploy/template1"
+		`
+
+		c := testcase.RunCase(t, initialFileTree, "./run", "pc1")
+		c.RequireReturnCode(t, 0)
+		c.RequireFileTree(t, expectedFileTree)
+		c.RequireSuccessMessage(t, expectedTemplateMessage)
+	})
+}
+
 func TestAlphabeticalExecutionSequence(t *testing.T) {
 	t.Run("links", func(t *testing.T) {
 			fileTree := `
