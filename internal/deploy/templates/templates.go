@@ -91,6 +91,16 @@ func (m templateMaker) makeTemplate(t Template) (success bool) {
 		return false
 	}
 
+	// Removes output path if it's a link.
+	outputType := fsutility.GetPathType(t.OutputPath)
+	if outputType == fsutility.Symlink {
+		err := os.Remove(t.OutputPath)
+		if err != nil {
+			m.logFail(t, err.Error())
+			return false
+		}
+	}
+
 	// Creates the expanded file
 	err = os.WriteFile(t.OutputPath, outputBuffer.Bytes(), 0644)
 	if err != nil {
